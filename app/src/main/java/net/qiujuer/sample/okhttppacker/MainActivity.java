@@ -21,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Http.enableSaveCookie(getApplication());
+
+
         new Thread() {
             @Override
             public void run() {
@@ -59,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+/*
         Http.downloadPostAsync("http://down.360safe.com/setup.exe", getCacheDir().getAbsolutePath(), null,null, new HttpCallback<File>() {
             @Override
             public void onProgress(long current, long count) {
@@ -76,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(File response) {
                 Log.e("MainActivity", "downloadPostAsync onSuccess:" + response.getAbsolutePath());
             }
-        });
+        });*/
 
     }
 }
