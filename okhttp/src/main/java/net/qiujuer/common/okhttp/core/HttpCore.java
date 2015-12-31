@@ -389,7 +389,7 @@ public class HttpCore {
 
 
     // This value use to debug the log
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
 
     // Show log
     protected static void log(String str) {

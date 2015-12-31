@@ -102,29 +102,33 @@ public class RequestListenerBuilder implements RequestBuilder {
         builder.type(MultipartBuilder.FORM);
         builder = buildMultipartBody(builder);
 
-        for (StringParam stringParam : stringStringParams) {
-            if (stringParam.key != null && stringParam.value != null) {
-                builder.addFormDataPart(stringParam.key, stringParam.value);
-                log("buildMultiStringParam: key: " + stringParam.key + " value: " + stringParam.value);
-            } else {
-                log("buildMultiStringParam: key: "
-                        + (stringParam.key != null ? stringParam.key : "null")
-                        + " value: "
-                        + (stringParam.value != null ? stringParam.value : "null"));
+        if (stringStringParams != null && stringStringParams.length > 0) {
+            for (StringParam stringParam : stringStringParams) {
+                if (stringParam.key != null && stringParam.value != null) {
+                    builder.addFormDataPart(stringParam.key, stringParam.value);
+                    log("buildMultiStringParam: key: " + stringParam.key + " value: " + stringParam.value);
+                } else {
+                    log("buildMultiStringParam: key: "
+                            + (stringParam.key != null ? stringParam.key : "null")
+                            + " value: "
+                            + (stringParam.value != null ? stringParam.value : "null"));
+                }
             }
         }
 
-        for (FileParam param : fileParams) {
-            if (param.key != null && param.file != null) {
-                String fileName = param.file.getName();
-                RequestBody fileBody = RequestBody.create(MediaType.parse(Util.getFileMimeType(fileName)), param.file);
-                builder.addFormDataPart(param.key, fileName, fileBody);
-                log("buildMultiFileParam: key: " + param.key + " value: " + fileName);
-            } else {
-                log("buildMultiFileParam: key: "
-                        + (param.key != null ? param.key : "null")
-                        + " file: "
-                        + (param.file != null ? param.file.getName() : "null"));
+        if (fileParams != null && fileParams.length > 0) {
+            for (FileParam param : fileParams) {
+                if (param.key != null && param.file != null) {
+                    String fileName = param.file.getName();
+                    RequestBody fileBody = RequestBody.create(MediaType.parse(Util.getFileMimeType(fileName)), param.file);
+                    builder.addFormDataPart(param.key, fileName, fileBody);
+                    log("buildMultiFileParam: key: " + param.key + " value: " + fileName);
+                } else {
+                    log("buildMultiFileParam: key: "
+                            + (param.key != null ? param.key : "null")
+                            + " file: "
+                            + (param.file != null ? param.file.getName() : "null"));
+                }
             }
         }
         return builder.build();

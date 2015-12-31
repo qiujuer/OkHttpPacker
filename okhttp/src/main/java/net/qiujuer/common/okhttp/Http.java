@@ -357,15 +357,27 @@ public class Http extends HttpCore {
      * ============UPLOAD ASYNC===============
      */
 
-    public static void uploadPostAsync(String url, Object tag, String key, File file, HttpCallback callback) {
-        uploadPostAsync(url, tag, callback, new FileParam(key, file));
+    public static void uploadAsync(String url, String key, File file, HttpCallback callback) {
+        uploadAsync(url, null, callback, new FileParam(key, file));
     }
 
-    public static void uploadPostAsync(String url, Object tag, HttpCallback callback, FileParam... params) {
-        uploadPostAsync(url, tag, callback, null, params);
+    public static void uploadAsync(String url, Object tag, String key, File file, HttpCallback callback) {
+        uploadAsync(url, tag, callback, new FileParam(key, file));
     }
 
-    public static void uploadPostAsync(String url, Object tag, HttpCallback callback, Param... params) {
+    public static void uploadAsync(String url, HttpCallback callback, FileParam... params) {
+        uploadAsync(url, null, callback, null, params);
+    }
+
+    public static void uploadAsync(String url, Object tag, HttpCallback callback, FileParam... params) {
+        uploadAsync(url, tag, callback, null, params);
+    }
+
+    public static void uploadAsync(String url, HttpCallback callback, Param... params) {
+        uploadAsync(url, null, callback, params);
+    }
+
+    public static void uploadAsync(String url, Object tag, HttpCallback callback, Param... params) {
         List<FileParam> fileParams = new ArrayList<>();
         List<StringParam> stringStringParams = new ArrayList<>();
         if (params != null && params.length > 0) {
@@ -377,51 +389,55 @@ public class Http extends HttpCore {
                 }
             }
         }
-        uploadPostAsync(url, tag, callback,
+        uploadAsync(url, tag, callback,
                 Util.listToParams(stringStringParams, StringParam.class),
                 Util.listToParams(fileParams, FileParam.class));
     }
 
-    public static void uploadPostAsync(String url, Object tag, HttpCallback callback, StringParam[] stringParams, FileParam... fileParams) {
+    public static void uploadAsync(String url, HttpCallback callback, StringParam[] stringParams, FileParam... fileParams) {
+        uploadAsync(url, null, callback, stringParams, fileParams);
+    }
+
+    public static void uploadAsync(String url, Object tag, HttpCallback callback, StringParam[] stringParams, FileParam... fileParams) {
         getInstance().executeUploadAsync(callback, url, tag, stringParams, fileParams);
     }
 
     /**
      * ============DOWNLOAD ASYNC===============
      */
-    public static void downloadPostAsync(String url, String file, HttpCallback<File> callback) {
-        downloadPostAsync(url, file, null, callback, new StringParam[0]);
+    public static void downloadAsync(String url, String file, HttpCallback<File> callback) {
+        downloadAsync(url, file, null, callback, new StringParam[0]);
     }
 
-    public static void downloadPostAsync(String url, String file, HttpCallback<File> callback, StringParam... params) {
-        downloadPostAsync(url, file, null, callback, params);
+    public static void downloadAsync(String url, String file, HttpCallback<File> callback, StringParam... params) {
+        downloadAsync(url, file, null, callback, params);
     }
 
-    public static void downloadPostAsync(String url, String file, Object tag, HttpCallback<File> callback) {
-        downloadPostAsync(url, file, tag, callback, new StringParam[0]);
+    public static void downloadAsync(String url, String file, Object tag, HttpCallback<File> callback) {
+        downloadAsync(url, file, tag, callback, new StringParam[0]);
     }
 
-    public static void downloadPostAsync(String url, String file, Object tag, HttpCallback<File> callback, StringParam... params) {
-        downloadPostAsync(url, file, tag, callback, METHOD_GET, params);
+    public static void downloadAsync(String url, String file, Object tag, HttpCallback<File> callback, StringParam... params) {
+        downloadAsync(url, file, tag, callback, METHOD_GET, params);
     }
 
-    public static void downloadPostAsync(String url, String file, Object tag, HttpCallback<File> callback, int method, StringParam... params) {
-        downloadPostAsync(url, new File(file), tag, callback, method, params);
+    public static void downloadAsync(String url, String file, Object tag, HttpCallback<File> callback, int method, StringParam... params) {
+        downloadAsync(url, new File(file), tag, callback, method, params);
     }
 
-    public static void downloadPostAsync(String url, String fileDir, String fileName, Object tag, HttpCallback<File> callback, StringParam... params) {
-        downloadPostAsync(url, fileDir, fileName, tag, callback, METHOD_GET, params);
+    public static void downloadAsync(String url, String fileDir, String fileName, Object tag, HttpCallback<File> callback, StringParam... params) {
+        downloadAsync(url, fileDir, fileName, tag, callback, METHOD_GET, params);
     }
 
-    public static void downloadPostAsync(String url, String fileDir, String fileName, Object tag, HttpCallback<File> callback, int method, StringParam... params) {
-        downloadPostAsync(url, Util.getFile(fileDir, fileName, url), tag, callback, method, params);
+    public static void downloadAsync(String url, String fileDir, String fileName, Object tag, HttpCallback<File> callback, int method, StringParam... params) {
+        downloadAsync(url, Util.getFile(fileDir, fileName, url), tag, callback, method, params);
     }
 
-    public static void downloadPostAsync(String url, File outFile, Object tag, HttpCallback<File> callback, StringParam... params) {
-        downloadPostAsync(url, outFile, tag, callback, METHOD_GET, params);
+    public static void downloadAsync(String url, File outFile, Object tag, HttpCallback<File> callback, StringParam... params) {
+        downloadAsync(url, outFile, tag, callback, METHOD_GET, params);
     }
 
-    public static void downloadPostAsync(String url, File outFile, Object tag, HttpCallback<File> callback, int method, StringParam... params) {
+    public static void downloadAsync(String url, File outFile, Object tag, HttpCallback<File> callback, int method, StringParam... params) {
         getInstance().executeDownloadAsync(callback, url, outFile, tag, method, params);
     }
 }
