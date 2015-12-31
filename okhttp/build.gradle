@@ -1,0 +1,55 @@
+apply plugin: 'com.android.library'
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'OkHttpPacker'
+
+    publishedGroupId = 'net.qiujuer.common'
+    libraryName = 'OkHttpPacker'
+    artifact = 'okhttp'
+
+    libraryDescription = 'A okhttp package, so that the use of okhttp is so easy.'
+
+    siteUrl = 'https://github.com/qiujuer/OkHttpPacker'
+    gitUrl = 'https://github.com/qiujuer/OkHttpPacker.git'
+
+    libraryVersion = '0.1.0'
+
+    developerId = 'qiujuer'
+    developerName = 'Ju Qiu'
+    developerEmail = 'qiujuer@live.cn'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.squareup.okhttp:okhttp:2.7.0'
+    compile 'com.google.code.gson:gson:2.5'
+    compile 'net.qiujuer.genius:kit:1.1.0'
+}
+
+
+apply from: '../script/install.gradle'
+apply from: '../script/bintray.gradle'
