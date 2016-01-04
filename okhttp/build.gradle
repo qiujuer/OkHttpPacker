@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/qiujuer/OkHttpPacker'
     gitUrl = 'https://github.com/qiujuer/OkHttpPacker.git'
 
-    libraryVersion = '0.3.0'
+    libraryVersion = '0.5.0'
 
     developerId = 'qiujuer'
     developerName = 'Ju Qiu'
@@ -31,8 +31,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 30
-        versionName "0.3.0"
+        versionCode 50
+        versionName "0.5.0"
     }
     buildTypes {
         release {
@@ -45,8 +45,8 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.squareup.okhttp:okhttp:2.7.0'
     compile 'com.google.code.gson:gson:2.5'
+    compile 'com.squareup.okhttp:okhttp:2.7.1'
     compile 'net.qiujuer.genius:kit:1.1.0'
 }
 

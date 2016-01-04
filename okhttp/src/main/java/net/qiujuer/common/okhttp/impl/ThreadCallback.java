@@ -1,4 +1,4 @@
-package net.qiujuer.common.okhttp.out;
+package net.qiujuer.common.okhttp.impl;
 
 import com.squareup.okhttp.Request;
 

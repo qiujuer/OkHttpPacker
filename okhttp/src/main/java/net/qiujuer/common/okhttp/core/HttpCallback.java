@@ -11,7 +11,7 @@ import net.qiujuer.genius.kit.util.UiKit;
  */
 public abstract class HttpCallback<T> implements ProgressListener {
     protected void dispatchBefore(final Request request) {
-        UiKit.runOnMainThreadSync(new Runnable() {
+        UiKit.runOnMainThreadAsync(new Runnable() {
             @Override
             public void run() {
                 onBefore(request);
@@ -20,7 +20,7 @@ public abstract class HttpCallback<T> implements ProgressListener {
     }
 
     protected void dispatchAfter() {
-        UiKit.runOnMainThreadSync(new Runnable() {
+        UiKit.runOnMainThreadAsync(new Runnable() {
             @Override
             public void run() {
                 onAfter();

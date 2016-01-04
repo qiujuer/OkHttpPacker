@@ -1,4 +1,4 @@
-package net.qiujuer.common.okhttp.in;
+package net.qiujuer.common.okhttp.io;
 
 /**
  * Created by qiujuer

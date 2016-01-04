@@ -17,6 +17,12 @@ import okio.Sink;
 public class RequestBody extends com.squareup.okhttp.RequestBody {
     private final com.squareup.okhttp.RequestBody mBody;
     private ProgressListener mListener;
+
+    @Override
+    public long contentLength() throws IOException {
+        return mBody.contentLength();
+    }
+
     private BufferedSink mSink;
 
     public RequestBody(com.squareup.okhttp.RequestBody body) {
@@ -43,7 +49,7 @@ public class RequestBody extends com.squareup.okhttp.RequestBody {
         }
         // Write in
         mBody.writeTo(mSink);
-        // We should call the sink flush to push end data
+        // flush the buffer
         mSink.flush();
     }
 
@@ -54,8 +60,10 @@ public class RequestBody extends com.squareup.okhttp.RequestBody {
 
             @Override
             public void write(Buffer source, long byteCount) throws IOException {
+                // call write
                 super.write(source, byteCount);
 
+                // Length
                 if (contentLength == 0) {
                     contentLength = contentLength();
                 }

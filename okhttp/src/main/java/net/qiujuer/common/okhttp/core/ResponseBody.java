@@ -24,6 +24,11 @@ public class ResponseBody extends com.squareup.okhttp.ResponseBody {
     }
 
     @Override
+    public void close() throws IOException {
+        this.mBody.close();
+    }
+
+    @Override
     public MediaType contentType() {
         return mBody.contentType();
     }

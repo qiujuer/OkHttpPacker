@@ -14,8 +14,8 @@ import com.squareup.okhttp.ResponseBody;
 import com.squareup.okhttp.internal.Util;
 
 import net.qiujuer.common.okhttp.DefaultCallback;
-import net.qiujuer.common.okhttp.in.IOParam;
-import net.qiujuer.common.okhttp.in.StrParam;
+import net.qiujuer.common.okhttp.io.IOParam;
+import net.qiujuer.common.okhttp.io.StrParam;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -71,9 +71,10 @@ public class HttpCore {
         mOkHttpClient.networkInterceptors().add(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
-                Response originalResponse = chain.proceed(chain.request());
-                return originalResponse.newBuilder()
-                        .body(new net.qiujuer.common.okhttp.core.ResponseBody(originalResponse.body()))
+                Response response = chain.proceed(chain.request());
+                ResponseBody body = new net.qiujuer.common.okhttp.core.ResponseBody(response.body());
+                return response.newBuilder()
+                        .body(body)
                         .build();
             }
         });

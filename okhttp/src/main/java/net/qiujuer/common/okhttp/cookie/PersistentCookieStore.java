@@ -1,4 +1,4 @@
-package net.qiujuer.common.okhttp;
+package net.qiujuer.common.okhttp.cookie;
 
 import android.content.Context;
 import android.content.SharedPreferences;

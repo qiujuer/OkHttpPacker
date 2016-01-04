@@ -24,7 +24,7 @@ import javax.net.ssl.X509TrustManager;
  * Created by qiujuer
  * on 15/12/30.
  */
-public class CertKit {
+public class CertTool {
     public static void setCertificates(OkHttpClient client, InputStream... certificates) {
         setCertificates(client, certificates, null, null);
     }

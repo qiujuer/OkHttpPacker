@@ -1,4 +1,4 @@
-package net.qiujuer.common.okhttp.core;
+package net.qiujuer.common.okhttp.impl;
 
 import android.util.Log;
 
@@ -10,8 +10,9 @@ import com.squareup.okhttp.RequestBody;
 
 import net.qiujuer.common.okhttp.Http;
 import net.qiujuer.common.okhttp.Util;
-import net.qiujuer.common.okhttp.in.IOParam;
-import net.qiujuer.common.okhttp.in.StrParam;
+import net.qiujuer.common.okhttp.core.RequestBuilder;
+import net.qiujuer.common.okhttp.io.IOParam;
+import net.qiujuer.common.okhttp.io.StrParam;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

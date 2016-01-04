@@ -1,7 +1,9 @@
-package net.qiujuer.common.okhttp.core;
+package net.qiujuer.common.okhttp.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.$Gson$Types;
+
+import net.qiujuer.common.okhttp.core.Resolver;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

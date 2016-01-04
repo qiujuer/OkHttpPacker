@@ -3,8 +3,8 @@ package net.qiujuer.common.okhttp;
 
 import android.text.TextUtils;
 
-import net.qiujuer.common.okhttp.in.IOParam;
-import net.qiujuer.common.okhttp.in.StrParam;
+import net.qiujuer.common.okhttp.io.IOParam;
+import net.qiujuer.common.okhttp.io.StrParam;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import java.util.Set;
  * on 15/12/25.
  */
 @SuppressWarnings("ALL")
-public class Util {
+public final class Util {
 
     public static <T> T[] listToParams(List<T> params, Class<T> tClass) {
         if (params == null || params.size() == 0)
