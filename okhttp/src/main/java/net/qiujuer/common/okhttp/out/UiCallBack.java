@@ -10,7 +10,7 @@ import net.qiujuer.genius.kit.util.UiKit;
  * Created by qiujuer
  * on 15/12/28.
  */
-public abstract class UiCallBack<T> extends HttpCallback<T> {
+public abstract class UiCallback<T> extends HttpCallback<T> {
     @Override
     protected void dispatchError(final Request request, final Response response, final Exception e) {
         UiKit.runOnMainThreadSync(new Runnable() {

@@ -3,8 +3,8 @@ package net.qiujuer.common.okhttp;
 
 import android.text.TextUtils;
 
-import net.qiujuer.common.okhttp.in.FileParam;
-import net.qiujuer.common.okhttp.in.StringParam;
+import net.qiujuer.common.okhttp.in.IOParam;
+import net.qiujuer.common.okhttp.in.StrParam;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,28 +37,28 @@ public class Util {
         }
     }
 
-    public static StringParam[] mapToStringParams(Map<String, String> params) {
-        if (params == null) return new StringParam[0];
+    public static StrParam[] mapToStringParams(Map<String, String> params) {
+        if (params == null) return new StrParam[0];
         int size = params.size();
-        if (size == 0) return new StringParam[0];
-        StringParam[] res = new StringParam[size];
+        if (size == 0) return new StrParam[0];
+        StrParam[] res = new StrParam[size];
         Set<Map.Entry<String, String>> entries = params.entrySet();
         int i = 0;
         for (Map.Entry<String, String> entry : entries) {
-            res[i++] = new StringParam(entry.getKey(), entry.getValue());
+            res[i++] = new StrParam(entry.getKey(), entry.getValue());
         }
         return res;
     }
 
-    public static FileParam[] mapToFileParams(Map<String, File> params) {
-        if (params == null) return new FileParam[0];
+    public static IOParam[] mapToFileParams(Map<String, File> params) {
+        if (params == null) return new IOParam[0];
         int size = params.size();
-        if (size == 0) return new FileParam[0];
-        FileParam[] res = new FileParam[size];
+        if (size == 0) return new IOParam[0];
+        IOParam[] res = new IOParam[size];
         Set<Map.Entry<String, File>> entries = params.entrySet();
         int i = 0;
         for (Map.Entry<String, File> entry : entries) {
-            res[i++] = new FileParam(entry.getKey(), entry.getValue());
+            res[i++] = new IOParam(entry.getKey(), entry.getValue());
         }
         return res;
     }

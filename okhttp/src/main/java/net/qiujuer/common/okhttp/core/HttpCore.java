@@ -14,8 +14,8 @@ import com.squareup.okhttp.ResponseBody;
 import com.squareup.okhttp.internal.Util;
 
 import net.qiujuer.common.okhttp.DefaultCallback;
-import net.qiujuer.common.okhttp.in.FileParam;
-import net.qiujuer.common.okhttp.in.StringParam;
+import net.qiujuer.common.okhttp.in.IOParam;
+import net.qiujuer.common.okhttp.in.StrParam;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,8 +43,32 @@ public class HttpCore {
     protected Resolver mResolver;
     protected RequestBuilder mBuilder;
 
-    public OkHttpClient interceptToProgressResponse(OkHttpClient client) {
-        client.networkInterceptors().add(new Interceptor() {
+    public HttpCore(Resolver resolver, RequestBuilder builder) {
+        mOkHttpClient = new OkHttpClient();
+        mResolver = resolver;
+        mBuilder = builder;
+    }
+
+    public Resolver getResolver() {
+        return mResolver;
+    }
+
+    public void setResolver(Resolver resolver) {
+        mResolver = resolver;
+    }
+
+    public RequestBuilder getRequestBuilder() {
+        return mBuilder;
+    }
+
+    public void setRequestBuilder(RequestBuilder builder) {
+        mBuilder = builder;
+    }
+
+
+    // intercept the Response body stream progress
+    public OkHttpClient interceptToProgressResponse() {
+        mOkHttpClient.networkInterceptors().add(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 Response originalResponse = chain.proceed(chain.request());
@@ -53,9 +77,8 @@ public class HttpCore {
                         .build();
             }
         });
-        return client;
+        return mOkHttpClient;
     }
-
 
     /**
      * ============Call============
@@ -208,18 +231,18 @@ public class HttpCore {
     /**
      * ============Execute============
      */
-    protected void executeGetAsync(HttpCallback callback, String url, Object tag, StringParam... stringParams) {
-        Request.Builder builder = mBuilder.builderGet(url, stringParams);
+    protected void executeGetAsync(HttpCallback callback, String url, Object tag, StrParam... strParams) {
+        Request.Builder builder = mBuilder.builderGet(url, strParams);
         async(builder, tag, callback);
     }
 
-    protected <T> T executeGetSync(Class<T> tClass, HttpCallback<T> callback, String url, Object tag, StringParam... stringParams) {
-        Request.Builder builder = mBuilder.builderGet(url, stringParams);
+    protected <T> T executeGetSync(Class<T> tClass, HttpCallback<T> callback, String url, Object tag, StrParam... strParams) {
+        Request.Builder builder = mBuilder.builderGet(url, strParams);
         return sync(tClass, builder, tag, callback);
     }
 
-    protected <T> T executePostSync(Class<T> tClass, HttpCallback<T> callback, String url, Object tag, StringParam... stringParams) {
-        Request.Builder builder = mBuilder.builderPost(url, stringParams);
+    protected <T> T executePostSync(Class<T> tClass, HttpCallback<T> callback, String url, Object tag, StrParam... strParams) {
+        Request.Builder builder = mBuilder.builderPost(url, strParams);
         return sync(tClass, builder, tag, callback);
     }
 
@@ -253,8 +276,8 @@ public class HttpCore {
         return sync(tClass, builder, tag, callback);
     }
 
-    protected void executePostAsync(HttpCallback callback, String url, Object tag, StringParam... stringParams) {
-        Request.Builder builder = mBuilder.builderPost(url, stringParams);
+    protected void executePostAsync(HttpCallback callback, String url, Object tag, StrParam... strParams) {
+        Request.Builder builder = mBuilder.builderPost(url, strParams);
         async(builder, tag, callback);
     }
 
@@ -288,12 +311,12 @@ public class HttpCore {
         async(builder, tag, callback);
     }
 
-    protected void executeUploadAsync(HttpCallback callback, String url, Object tag, StringParam[] stringParams, FileParam... fileParams) {
-        Request.Builder builder = mBuilder.builderPost(url, stringParams, fileParams);
+    protected void executeUploadAsync(HttpCallback callback, String url, Object tag, StrParam[] strParams, IOParam... IOParams) {
+        Request.Builder builder = mBuilder.builderPost(url, strParams, IOParams);
         uploadAsync(builder, tag, callback);
     }
 
-    protected void executeDownloadAsync(HttpCallback<File> callback, String url, File file, Object tag, int method, StringParam... params) {
+    protected void executeDownloadAsync(HttpCallback<File> callback, String url, File file, Object tag, int method, StrParam... params) {
         Request.Builder builder;
         if (method == METHOD_POST) {
             builder = mBuilder.builderPost(url, params);

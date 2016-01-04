@@ -7,10 +7,9 @@ import com.squareup.okhttp.RequestBody;
 
 import net.qiujuer.common.okhttp.core.HttpCallback;
 import net.qiujuer.common.okhttp.core.HttpCore;
-import net.qiujuer.common.okhttp.core.Resolver;
-import net.qiujuer.common.okhttp.in.FileParam;
+import net.qiujuer.common.okhttp.in.IOParam;
 import net.qiujuer.common.okhttp.in.Param;
-import net.qiujuer.common.okhttp.in.StringParam;
+import net.qiujuer.common.okhttp.in.StrParam;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,13 +33,11 @@ public class Http extends HttpCore {
     private static Http mInstance;
 
     private Http() {
-        super();
-        mOkHttpClient = new OkHttpClient();
+        super(new DefaultResolver(), new DefaultRequestBuilder());
         // ConnectTimeOut
         mOkHttpClient.setConnectTimeout(10 * 1000, TimeUnit.MILLISECONDS);
-        mResolver = new DefaultResolver();
-        mBuilder = new DefaultRequestBuilder();
-        mOkHttpClient = interceptToProgressResponse(mOkHttpClient);
+        // To intercept the Response
+        interceptToProgressResponse();
     }
 
     public static Http getInstance() {
@@ -92,10 +89,6 @@ public class Http extends HttpCore {
         return "";
     }
 
-    public static void setResolver(Resolver resolver) {
-        getInstance().mResolver = resolver;
-    }
-
     public static OkHttpClient getClient() {
         return getInstance().mOkHttpClient;
     }
@@ -105,11 +98,11 @@ public class Http extends HttpCore {
      * ============GET SYNC===============
      */
     public static String getSync(String url) {
-        return getSync(url, new StringParam[0]);
+        return getSync(url, new StrParam[0]);
     }
 
-    public static String getSync(String url, StringParam... stringParams) {
-        return getSync(String.class, url, stringParams);
+    public static String getSync(String url, StrParam... strParams) {
+        return getSync(String.class, url, strParams);
     }
 
     public static String getSync(String url, Object tag) {
@@ -117,15 +110,15 @@ public class Http extends HttpCore {
     }
 
     public static <T> T getSync(Class<T> tClass, String url) {
-        return getSync(tClass, url, new StringParam[0]);
+        return getSync(tClass, url, new StrParam[0]);
     }
 
-    public static <T> T getSync(Class<T> tClass, String url, StringParam... stringParams) {
-        return getSync(tClass, url, null, stringParams);
+    public static <T> T getSync(Class<T> tClass, String url, StrParam... strParams) {
+        return getSync(tClass, url, null, strParams);
     }
 
-    public static <T> T getSync(Class<T> tClass, String url, List<StringParam> stringParams) {
-        return getSync(tClass, url, null, Util.listToParams(stringParams, StringParam.class));
+    public static <T> T getSync(Class<T> tClass, String url, List<StrParam> strParams) {
+        return getSync(tClass, url, null, Util.listToParams(strParams, StrParam.class));
     }
 
     public static <T> T getSync(Class<T> tClass, String url, Map<String, String> params) {
@@ -133,15 +126,15 @@ public class Http extends HttpCore {
     }
 
     public static <T> T getSync(Class<T> tClass, String url, Object tag) {
-        return getSync(tClass, url, tag, new StringParam[0]);
+        return getSync(tClass, url, tag, new StrParam[0]);
     }
 
-    public static <T> T getSync(Class<T> tClass, String url, Object tag, StringParam... stringParams) {
-        return getInstance().executeGetSync(tClass, null, url, tag, stringParams);
+    public static <T> T getSync(Class<T> tClass, String url, Object tag, StrParam... strParams) {
+        return getInstance().executeGetSync(tClass, null, url, tag, strParams);
     }
 
-    public static <T> T getSync(Class<T> tClass, String url, Object tag, List<StringParam> stringParams) {
-        return getSync(tClass, url, tag, Util.listToParams(stringParams, StringParam.class));
+    public static <T> T getSync(Class<T> tClass, String url, Object tag, List<StrParam> strParams) {
+        return getSync(tClass, url, tag, Util.listToParams(strParams, StrParam.class));
     }
 
     public static <T> T getSync(Class<T> tClass, String url, Object tag, Map<String, String> params) {
@@ -153,27 +146,27 @@ public class Http extends HttpCore {
     }
 
     public static <T> T getSync(String url, Object tag, HttpCallback<T> callback) {
-        return getSync(url, tag, callback, new StringParam[0]);
+        return getSync(url, tag, callback, new StrParam[0]);
     }
 
-    public static <T> T getSync(String url, HttpCallback<T> callback, StringParam... stringParams) {
-        return getSync(url, null, callback, stringParams);
+    public static <T> T getSync(String url, HttpCallback<T> callback, StrParam... strParams) {
+        return getSync(url, null, callback, strParams);
     }
 
-    public static <T> T getSync(String url, HttpCallback<T> callback, List<StringParam> stringParams) {
-        return getSync(url, null, callback, Util.listToParams(stringParams, StringParam.class));
+    public static <T> T getSync(String url, HttpCallback<T> callback, List<StrParam> strParams) {
+        return getSync(url, null, callback, Util.listToParams(strParams, StrParam.class));
     }
 
     public static <T> T getSync(String url, HttpCallback<T> callback, Map<String, String> params) {
         return getSync(url, null, callback, Util.mapToStringParams(params));
     }
 
-    public static <T> T getSync(String url, Object tag, HttpCallback<T> callback, StringParam... stringParams) {
-        return getInstance().executeGetSync(null, callback, url, tag, stringParams);
+    public static <T> T getSync(String url, Object tag, HttpCallback<T> callback, StrParam... strParams) {
+        return getInstance().executeGetSync(null, callback, url, tag, strParams);
     }
 
-    public static <T> T getSync(String url, Object tag, HttpCallback<T> callback, List<StringParam> stringParams) {
-        return getSync(url, tag, callback, Util.listToParams(stringParams, StringParam.class));
+    public static <T> T getSync(String url, Object tag, HttpCallback<T> callback, List<StrParam> strParams) {
+        return getSync(url, tag, callback, Util.listToParams(strParams, StrParam.class));
     }
 
     public static <T> T getSync(String url, Object tag, HttpCallback<T> callback, Map<String, String> params) {
@@ -184,15 +177,15 @@ public class Http extends HttpCore {
      * ============GET ASYNC===============
      */
     public static void getAsync(String url, HttpCallback callback) {
-        getAsync(url, callback, new StringParam[0]);
+        getAsync(url, callback, new StrParam[0]);
     }
 
-    public static void getAsync(String url, HttpCallback callback, StringParam... stringParams) {
-        getAsync(url, null, callback, stringParams);
+    public static void getAsync(String url, HttpCallback callback, StrParam... strParams) {
+        getAsync(url, null, callback, strParams);
     }
 
-    public static void getAsync(String url, HttpCallback callback, List<StringParam> stringParams) {
-        getAsync(url, null, callback, Util.listToParams(stringParams, StringParam.class));
+    public static void getAsync(String url, HttpCallback callback, List<StrParam> strParams) {
+        getAsync(url, null, callback, Util.listToParams(strParams, StrParam.class));
     }
 
     public static void getAsync(String url, HttpCallback callback, Map<String, String> params) {
@@ -200,15 +193,15 @@ public class Http extends HttpCore {
     }
 
     public static void getAsync(String url, Object tag, HttpCallback callback) {
-        getAsync(url, tag, callback, new StringParam[0]);
+        getAsync(url, tag, callback, new StrParam[0]);
     }
 
-    public static void getAsync(String url, Object tag, HttpCallback callback, StringParam... stringParams) {
-        getInstance().executeGetAsync(callback, url, tag, stringParams);
+    public static void getAsync(String url, Object tag, HttpCallback callback, StrParam... strParams) {
+        getInstance().executeGetAsync(callback, url, tag, strParams);
     }
 
-    public static void getAsync(String url, Object tag, HttpCallback callback, List<StringParam> stringParams) {
-        getAsync(url, tag, callback, Util.listToParams(stringParams, StringParam.class));
+    public static void getAsync(String url, Object tag, HttpCallback callback, List<StrParam> strParams) {
+        getAsync(url, tag, callback, Util.listToParams(strParams, StrParam.class));
     }
 
     public static void getAsync(String url, Object tag, HttpCallback callback, Map<String, String> params) {
@@ -218,91 +211,91 @@ public class Http extends HttpCore {
     /**
      * ============POST SYNC===============
      */
-    public static String postSync(String url, List<StringParam> stringParams) {
-        return postSync(String.class, url, null, Util.listToParams(stringParams, StringParam.class));
+    public static String postSync(String url, List<StrParam> strParams) {
+        return postSync(String.class, url, null, Util.listToParams(strParams, StrParam.class));
     }
 
     public static String postSync(String url, Map<String, String> params) {
         return postSync(String.class, url, null, Util.mapToStringParams(params));
     }
 
-    public static String postSync(String url, StringParam... stringParams) {
-        return postSync(String.class, url, null, stringParams);
+    public static String postSync(String url, StrParam... strParams) {
+        return postSync(String.class, url, null, strParams);
     }
 
-    public static <T> T postSync(Class<T> tClass, String url, List<StringParam> stringParams) {
-        return postSync(tClass, url, null, Util.listToParams(stringParams, StringParam.class));
+    public static <T> T postSync(Class<T> tClass, String url, List<StrParam> strParams) {
+        return postSync(tClass, url, null, Util.listToParams(strParams, StrParam.class));
     }
 
     public static <T> T postSync(Class<T> tClass, String url, Map<String, String> params) {
         return postSync(tClass, url, null, Util.mapToStringParams(params));
     }
 
-    public static <T> T postSync(Class<T> tClass, String url, StringParam... stringParams) {
-        return postSync(tClass, url, null, stringParams);
+    public static <T> T postSync(Class<T> tClass, String url, StrParam... strParams) {
+        return postSync(tClass, url, null, strParams);
     }
 
-    public static <T> T postSync(Class<T> tClass, String url, Object tag, List<StringParam> stringParams) {
-        return postSync(tClass, url, tag, Util.listToParams(stringParams, StringParam.class));
+    public static <T> T postSync(Class<T> tClass, String url, Object tag, List<StrParam> strParams) {
+        return postSync(tClass, url, tag, Util.listToParams(strParams, StrParam.class));
     }
 
     public static <T> T postSync(Class<T> tClass, String url, Object tag, Map<String, String> params) {
         return postSync(tClass, url, tag, Util.mapToStringParams(params));
     }
 
-    public static <T> T postSync(Class<T> tClass, String url, Object tag, StringParam... stringParams) {
-        return getInstance().executeGetSync(tClass, null, url, tag, stringParams);
+    public static <T> T postSync(Class<T> tClass, String url, Object tag, StrParam... strParams) {
+        return getInstance().executeGetSync(tClass, null, url, tag, strParams);
     }
 
-    public static <T> T postSync(String url, HttpCallback<T> callback, List<StringParam> stringParams) {
-        return postSync(url, null, callback, Util.listToParams(stringParams, StringParam.class));
+    public static <T> T postSync(String url, HttpCallback<T> callback, List<StrParam> strParams) {
+        return postSync(url, null, callback, Util.listToParams(strParams, StrParam.class));
     }
 
     public static <T> T postSync(String url, HttpCallback<T> callback, Map<String, String> params) {
         return postSync(url, null, callback, Util.mapToStringParams(params));
     }
 
-    public static <T> T postSync(String url, HttpCallback<T> callback, StringParam... stringParams) {
-        return postSync(url, null, callback, stringParams);
+    public static <T> T postSync(String url, HttpCallback<T> callback, StrParam... strParams) {
+        return postSync(url, null, callback, strParams);
     }
 
-    public static <T> T postSync(String url, Object tag, HttpCallback<T> callback, List<StringParam> stringParams) {
-        return postSync(url, tag, callback, Util.listToParams(stringParams, StringParam.class));
+    public static <T> T postSync(String url, Object tag, HttpCallback<T> callback, List<StrParam> strParams) {
+        return postSync(url, tag, callback, Util.listToParams(strParams, StrParam.class));
     }
 
     public static <T> T postSync(String url, Object tag, HttpCallback<T> callback, Map<String, String> params) {
         return postSync(url, tag, callback, Util.mapToStringParams(params));
     }
 
-    public static <T> T postSync(String url, Object tag, HttpCallback<T> callback, StringParam... stringParams) {
-        return getInstance().executeGetSync(null, callback, url, tag, stringParams);
+    public static <T> T postSync(String url, Object tag, HttpCallback<T> callback, StrParam... strParams) {
+        return getInstance().executeGetSync(null, callback, url, tag, strParams);
     }
 
     /**
      * ============POST ASYNC===============
      */
-    public static void postAsync(String url, final HttpCallback callback, List<StringParam> stringParams) {
-        postAsync(url, null, callback, Util.listToParams(stringParams, StringParam.class));
+    public static void postAsync(String url, final HttpCallback callback, List<StrParam> strParams) {
+        postAsync(url, null, callback, Util.listToParams(strParams, StrParam.class));
     }
 
     public static void postAsync(String url, final HttpCallback callback, Map<String, String> params) {
         postAsync(url, null, callback, Util.mapToStringParams(params));
     }
 
-    public static void postAsync(String url, final HttpCallback callback, StringParam... stringParams) {
-        postAsync(url, null, callback, stringParams);
+    public static void postAsync(String url, final HttpCallback callback, StrParam... strParams) {
+        postAsync(url, null, callback, strParams);
     }
 
-    public static void postAsync(String url, Object tag, final HttpCallback callback, List<StringParam> stringParams) {
-        postAsync(url, tag, callback, Util.listToParams(stringParams, StringParam.class));
+    public static void postAsync(String url, Object tag, final HttpCallback callback, List<StrParam> strParams) {
+        postAsync(url, tag, callback, Util.listToParams(strParams, StrParam.class));
     }
 
     public static void postAsync(String url, Object tag, final HttpCallback callback, Map<String, String> params) {
         postAsync(url, tag, callback, Util.mapToStringParams(params));
     }
 
-    public static void postAsync(String url, Object tag, final HttpCallback callback, StringParam... stringParams) {
-        getInstance().executePostAsync(callback, url, tag, stringParams);
+    public static void postAsync(String url, Object tag, final HttpCallback callback, StrParam... strParams) {
+        getInstance().executePostAsync(callback, url, tag, strParams);
     }
 
     public static void postAsync(String url, final HttpCallback callback, RequestBody body) {
@@ -358,18 +351,18 @@ public class Http extends HttpCore {
      */
 
     public static void uploadAsync(String url, String key, File file, HttpCallback callback) {
-        uploadAsync(url, null, callback, new FileParam(key, file));
+        uploadAsync(url, null, callback, new IOParam(key, file));
     }
 
     public static void uploadAsync(String url, Object tag, String key, File file, HttpCallback callback) {
-        uploadAsync(url, tag, callback, new FileParam(key, file));
+        uploadAsync(url, tag, callback, new IOParam(key, file));
     }
 
-    public static void uploadAsync(String url, HttpCallback callback, FileParam... params) {
+    public static void uploadAsync(String url, HttpCallback callback, IOParam... params) {
         uploadAsync(url, null, callback, null, params);
     }
 
-    public static void uploadAsync(String url, Object tag, HttpCallback callback, FileParam... params) {
+    public static void uploadAsync(String url, Object tag, HttpCallback callback, IOParam... params) {
         uploadAsync(url, tag, callback, null, params);
     }
 
@@ -378,66 +371,66 @@ public class Http extends HttpCore {
     }
 
     public static void uploadAsync(String url, Object tag, HttpCallback callback, Param... params) {
-        List<FileParam> fileParams = new ArrayList<>();
-        List<StringParam> stringStringParams = new ArrayList<>();
+        List<IOParam> IOParams = new ArrayList<>();
+        List<StrParam> stringStrParams = new ArrayList<>();
         if (params != null && params.length > 0) {
             for (Param param : params) {
                 if (param.isFile()) {
-                    fileParams.add(param.getFileParam());
+                    IOParams.add(param.getFileParam());
                 } else {
-                    stringStringParams.add(param.getStringParam());
+                    stringStrParams.add(param.getStringParam());
                 }
             }
         }
         uploadAsync(url, tag, callback,
-                Util.listToParams(stringStringParams, StringParam.class),
-                Util.listToParams(fileParams, FileParam.class));
+                Util.listToParams(stringStrParams, StrParam.class),
+                Util.listToParams(IOParams, IOParam.class));
     }
 
-    public static void uploadAsync(String url, HttpCallback callback, StringParam[] stringParams, FileParam... fileParams) {
-        uploadAsync(url, null, callback, stringParams, fileParams);
+    public static void uploadAsync(String url, HttpCallback callback, StrParam[] strParams, IOParam... IOParams) {
+        uploadAsync(url, null, callback, strParams, IOParams);
     }
 
-    public static void uploadAsync(String url, Object tag, HttpCallback callback, StringParam[] stringParams, FileParam... fileParams) {
-        getInstance().executeUploadAsync(callback, url, tag, stringParams, fileParams);
+    public static void uploadAsync(String url, Object tag, HttpCallback callback, StrParam[] strParams, IOParam... IOParams) {
+        getInstance().executeUploadAsync(callback, url, tag, strParams, IOParams);
     }
 
     /**
      * ============DOWNLOAD ASYNC===============
      */
     public static void downloadAsync(String url, String file, HttpCallback<File> callback) {
-        downloadAsync(url, file, null, callback, new StringParam[0]);
+        downloadAsync(url, file, null, callback, new StrParam[0]);
     }
 
-    public static void downloadAsync(String url, String file, HttpCallback<File> callback, StringParam... params) {
+    public static void downloadAsync(String url, String file, HttpCallback<File> callback, StrParam... params) {
         downloadAsync(url, file, null, callback, params);
     }
 
     public static void downloadAsync(String url, String file, Object tag, HttpCallback<File> callback) {
-        downloadAsync(url, file, tag, callback, new StringParam[0]);
+        downloadAsync(url, file, tag, callback, new StrParam[0]);
     }
 
-    public static void downloadAsync(String url, String file, Object tag, HttpCallback<File> callback, StringParam... params) {
+    public static void downloadAsync(String url, String file, Object tag, HttpCallback<File> callback, StrParam... params) {
         downloadAsync(url, file, tag, callback, METHOD_GET, params);
     }
 
-    public static void downloadAsync(String url, String file, Object tag, HttpCallback<File> callback, int method, StringParam... params) {
+    public static void downloadAsync(String url, String file, Object tag, HttpCallback<File> callback, int method, StrParam... params) {
         downloadAsync(url, new File(file), tag, callback, method, params);
     }
 
-    public static void downloadAsync(String url, String fileDir, String fileName, Object tag, HttpCallback<File> callback, StringParam... params) {
+    public static void downloadAsync(String url, String fileDir, String fileName, Object tag, HttpCallback<File> callback, StrParam... params) {
         downloadAsync(url, fileDir, fileName, tag, callback, METHOD_GET, params);
     }
 
-    public static void downloadAsync(String url, String fileDir, String fileName, Object tag, HttpCallback<File> callback, int method, StringParam... params) {
+    public static void downloadAsync(String url, String fileDir, String fileName, Object tag, HttpCallback<File> callback, int method, StrParam... params) {
         downloadAsync(url, Util.getFile(fileDir, fileName, url), tag, callback, method, params);
     }
 
-    public static void downloadAsync(String url, File outFile, Object tag, HttpCallback<File> callback, StringParam... params) {
+    public static void downloadAsync(String url, File outFile, Object tag, HttpCallback<File> callback, StrParam... params) {
         downloadAsync(url, outFile, tag, callback, METHOD_GET, params);
     }
 
-    public static void downloadAsync(String url, File outFile, Object tag, HttpCallback<File> callback, int method, StringParam... params) {
+    public static void downloadAsync(String url, File outFile, Object tag, HttpCallback<File> callback, int method, StrParam... params) {
         getInstance().executeDownloadAsync(callback, url, outFile, tag, method, params);
     }
 }

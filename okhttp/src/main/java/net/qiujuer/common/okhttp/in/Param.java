@@ -7,7 +7,7 @@ import java.io.File;
  * Created by qiujuer
  * on 15/12/25.
  */
-public class Param extends StringParam {
+public class Param extends StrParam {
     private boolean isFile;
 
     public Param(String key, File file) {
@@ -15,12 +15,12 @@ public class Param extends StringParam {
         isFile = true;
     }
 
-    public Param(FileParam param) {
+    public Param(IOParam param) {
         this(param.key, param.file);
     }
 
-    public Param(StringParam stringParam) {
-        super(stringParam.key, stringParam.value);
+    public Param(StrParam strParam) {
+        super(strParam.key, strParam.value);
     }
 
     public Param(String key, String value) {
@@ -43,12 +43,12 @@ public class Param extends StringParam {
         super(key, value);
     }
 
-    public StringParam getStringParam() {
-        return new StringParam(key, value);
+    public StrParam getStringParam() {
+        return new StrParam(key, value);
     }
 
-    public FileParam getFileParam() {
-        return new FileParam(key, new File(value));
+    public IOParam getFileParam() {
+        return new IOParam(key, new File(value));
     }
 
     public boolean isFile() {

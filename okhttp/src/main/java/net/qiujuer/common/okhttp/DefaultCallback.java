@@ -5,13 +5,13 @@ import android.util.Log;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
-import net.qiujuer.common.okhttp.out.ThreadCallBack;
+import net.qiujuer.common.okhttp.out.ThreadCallback;
 
 /**
  * Created by qiujuer
  * on 15/12/25.
  */
-public class DefaultCallback extends ThreadCallBack<String> {
+public class DefaultCallback extends ThreadCallback<String> {
     @Override
     public void onError(Request request, Response response, Exception e) {
         Log.d("Callback", "onError.");

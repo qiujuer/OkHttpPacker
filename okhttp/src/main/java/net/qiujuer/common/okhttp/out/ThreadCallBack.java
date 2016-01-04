@@ -8,7 +8,7 @@ import net.qiujuer.common.okhttp.core.HttpCallback;
  * Created by qiujuer
  * on 15/12/28.
  */
-public abstract class ThreadCallBack<T> extends HttpCallback<T> {
+public abstract class ThreadCallback<T> extends HttpCallback<T> {
     protected void dispatchBefore(final Request request) {
         onBefore(request);
     }

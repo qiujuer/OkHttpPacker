@@ -10,8 +10,8 @@ import com.squareup.okhttp.RequestBody;
 
 import net.qiujuer.common.okhttp.Http;
 import net.qiujuer.common.okhttp.Util;
-import net.qiujuer.common.okhttp.in.FileParam;
-import net.qiujuer.common.okhttp.in.StringParam;
+import net.qiujuer.common.okhttp.in.IOParam;
+import net.qiujuer.common.okhttp.in.StrParam;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,7 +23,7 @@ import java.io.File;
  * Created by qiujuer
  * on 15/12/28.
  */
-public class RequestListenerBuilder implements RequestBuilder {
+public class RequestCallBuilder implements RequestBuilder {
     /**
      * Default charset for JSON request.
      */
@@ -76,48 +76,48 @@ public class RequestListenerBuilder implements RequestBuilder {
         this.mListener = listener;
     }
 
-    protected RequestBody createFormBody(StringParam... stringParams) {
+    protected RequestBody createFormBody(StrParam... strParams) {
         FormEncodingBuilder formEncodingBuilder = new FormEncodingBuilder();
         formEncodingBuilder = buildFormBody(formEncodingBuilder);
 
         // Add values
-        if (stringParams != null && stringParams.length > 0) {
-            for (StringParam stringParam : stringParams) {
-                if (stringParam.key != null && stringParam.value != null) {
-                    formEncodingBuilder.add(stringParam.key, stringParam.value);
-                    log("buildFormParam: key: " + stringParam.key + " value: " + stringParam.value);
+        if (strParams != null && strParams.length > 0) {
+            for (StrParam strParam : strParams) {
+                if (strParam.key != null && strParam.value != null) {
+                    formEncodingBuilder.add(strParam.key, strParam.value);
+                    log("buildFormParam: key: " + strParam.key + " value: " + strParam.value);
                 } else {
                     log("buildFormParam: key: "
-                            + (stringParam.key != null ? stringParam.key : "null")
+                            + (strParam.key != null ? strParam.key : "null")
                             + " value: "
-                            + (stringParam.value != null ? stringParam.value : "null"));
+                            + (strParam.value != null ? strParam.value : "null"));
                 }
             }
         }
         return formEncodingBuilder.build();
     }
 
-    protected RequestBody createMultipartBody(StringParam[] stringStringParams, FileParam[] fileParams) {
+    protected RequestBody createMultipartBody(StrParam[] stringStrParams, IOParam[] IOParams) {
         MultipartBuilder builder = new MultipartBuilder();
         builder.type(MultipartBuilder.FORM);
         builder = buildMultipartBody(builder);
 
-        if (stringStringParams != null && stringStringParams.length > 0) {
-            for (StringParam stringParam : stringStringParams) {
-                if (stringParam.key != null && stringParam.value != null) {
-                    builder.addFormDataPart(stringParam.key, stringParam.value);
-                    log("buildMultiStringParam: key: " + stringParam.key + " value: " + stringParam.value);
+        if (stringStrParams != null && stringStrParams.length > 0) {
+            for (StrParam strParam : stringStrParams) {
+                if (strParam.key != null && strParam.value != null) {
+                    builder.addFormDataPart(strParam.key, strParam.value);
+                    log("buildMultiStringParam: key: " + strParam.key + " value: " + strParam.value);
                 } else {
                     log("buildMultiStringParam: key: "
-                            + (stringParam.key != null ? stringParam.key : "null")
+                            + (strParam.key != null ? strParam.key : "null")
                             + " value: "
-                            + (stringParam.value != null ? stringParam.value : "null"));
+                            + (strParam.value != null ? strParam.value : "null"));
                 }
             }
         }
 
-        if (fileParams != null && fileParams.length > 0) {
-            for (FileParam param : fileParams) {
+        if (IOParams != null && IOParams.length > 0) {
+            for (IOParam param : IOParams) {
                 if (param.key != null && param.file != null) {
                     String fileName = param.file.getName();
                     RequestBody fileBody = RequestBody.create(MediaType.parse(Util.getFileMimeType(fileName)), param.file);
@@ -136,7 +136,7 @@ public class RequestListenerBuilder implements RequestBuilder {
 
 
     @Override
-    public Request.Builder builderGet(String url, StringParam... stringParams) {
+    public Request.Builder builderGet(String url, StrParam... strParams) {
         StringBuilder sb = new StringBuilder();
 
         // Check the url is have "?" char
@@ -146,18 +146,18 @@ public class RequestListenerBuilder implements RequestBuilder {
         isFirst = buildGetParams(sb, isFirst);
 
         // Add values
-        if (stringParams != null && stringParams.length > 0) {
-            for (StringParam stringParam : stringParams) {
-                if (stringParam.key != null && stringParam.value != null) {
+        if (strParams != null && strParams.length > 0) {
+            for (StrParam strParam : strParams) {
+                if (strParam.key != null && strParam.value != null) {
                     if (isFirst) {
                         isFirst = false;
                         sb.append("?");
                     } else {
                         sb.append("&");
                     }
-                    sb.append(stringParam.key);
+                    sb.append(strParam.key);
                     sb.append("=");
-                    sb.append(stringParam.value);
+                    sb.append(strParam.value);
                 }
             }
         }
@@ -171,14 +171,14 @@ public class RequestListenerBuilder implements RequestBuilder {
     }
 
     @Override
-    public Request.Builder builderPost(String url, StringParam[] stringStringParams, FileParam[] fileParams) {
-        RequestBody body = createMultipartBody(stringStringParams, fileParams);
+    public Request.Builder builderPost(String url, StrParam[] stringStrParams, IOParam[] IOParams) {
+        RequestBody body = createMultipartBody(stringStrParams, IOParams);
         return builderPost(url, body);
     }
 
     @Override
-    public Request.Builder builderPost(String url, StringParam... stringParams) {
-        RequestBody body = createFormBody(stringParams);
+    public Request.Builder builderPost(String url, StrParam... strParams) {
+        RequestBody body = createFormBody(strParams);
         return builderPost(url, body);
     }
 
@@ -237,7 +237,7 @@ public class RequestListenerBuilder implements RequestBuilder {
     }
 
     @Override
-    public Request.Builder builderPut(String url, StringParam... stringParams) {
+    public Request.Builder builderPut(String url, StrParam... strParams) {
         return null;
     }
 

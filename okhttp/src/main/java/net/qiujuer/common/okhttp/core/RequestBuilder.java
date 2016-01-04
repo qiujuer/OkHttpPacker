@@ -3,8 +3,8 @@ package net.qiujuer.common.okhttp.core;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 
-import net.qiujuer.common.okhttp.in.FileParam;
-import net.qiujuer.common.okhttp.in.StringParam;
+import net.qiujuer.common.okhttp.in.IOParam;
+import net.qiujuer.common.okhttp.in.StrParam;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,11 +17,11 @@ import java.io.File;
  * on 15/12/28.
  */
 public interface RequestBuilder {
-    Request.Builder builderGet(String url, StringParam... stringParams);
+    Request.Builder builderGet(String url, StrParam... strParams);
 
-    Request.Builder builderPost(String url, StringParam[] stringStringParams, FileParam[] fileParams);
+    Request.Builder builderPost(String url, StrParam[] stringStrParams, IOParam[] IOParams);
 
-    Request.Builder builderPost(String url, StringParam... stringParams);
+    Request.Builder builderPost(String url, StrParam... strParams);
 
     Request.Builder builderPost(String url, RequestBody body);
 
@@ -35,7 +35,7 @@ public interface RequestBuilder {
 
     Request.Builder builderPost(String url, JSONArray jsonArray);
 
-    Request.Builder builderPut(String url, StringParam... stringParams);
+    Request.Builder builderPut(String url, StrParam... strParams);
 
     Request.Builder builderDelete(String url);
 
