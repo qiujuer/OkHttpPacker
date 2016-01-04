@@ -1,18 +1,19 @@
-package net.qiujuer.sample.okhttppacker;
+package net.qiujuer.sample.okhttp;
 
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import net.qiujuer.common.okhttp.Http;
 import net.qiujuer.common.okhttp.Util;
-import net.qiujuer.common.okhttp.core.HttpCallback;
-import net.qiujuer.common.okhttp.out.ThreadCallBack;
-import net.qiujuer.common.okhttp.out.UiCallBack;
+import net.qiujuer.common.okhttp.out.ThreadCallback;
+import net.qiujuer.common.okhttp.out.UiCallback;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,13 +21,28 @@ import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity {
 
+    private ProgressBar mUpload;
+    private ProgressBar mDownload;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Http.enableSaveCookie(getApplication());
+        mUpload = (ProgressBar) findViewById(R.id.proUpload);
+        mDownload = (ProgressBar) findViewById(R.id.proDownload);
 
+        initHttp();
+        get();
+        upload();
+        download();
+    }
+
+    private void initHttp() {
+        Http.enableSaveCookie(getApplication());
+    }
+
+    private void get() {
         final String url = "http://wthrcdn.etouch.cn/weather_mini?citykey=101010100";
 
         new Thread() {
@@ -36,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 String str = Http.getSync(url, String.class);
                 log("getSync1:" + str);
 
-                str = Http.getSync(url, new ThreadCallBack<String>() {
+                str = Http.getSync(url, new ThreadCallback<String>() {
                     @Override
                     public void onError(Request request, Response response, Exception e) {
                         log("getSync2:onError");
@@ -51,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }.start();
 
-        Http.getAsync(url, new UiCallBack<String>() {
+        Http.getAsync(url, new UiCallback<String>() {
             @Override
             public void onError(Request request, Response response, Exception e) {
                 log("getAsync:onError");
@@ -62,27 +78,28 @@ public class MainActivity extends AppCompatActivity {
                 log("getAsync:onSuccess:" + response);
             }
         });
-
-        upload();
-        download();
     }
 
     private void download() {
-        Http.downloadAsync("http://res.qiujuer.net/res/89CEC6699E00DC6093696CF7B625BAAC", getSDPath(), "download.cache", null, new HttpCallback<File>() {
+        Http.downloadAsync("http://res.qiujuer.net/res/89CEC6699E00DC6093696CF7B625BAAC", getSDPath(), "download.cache", null, new UiCallback<File>() {
             @Override
             public void onProgress(long current, long count) {
                 super.onProgress(current, count);
                 log("downloadAsync onProgress:" + current + "/" + count);
+                mDownload.setProgress((int) ((current * 100.00 / count)));
             }
 
             @Override
             public void onError(Request request, Response response, Exception e) {
+                e.printStackTrace();
                 log("downloadAsync onError");
+                toast("downloadAsync onError.");
             }
 
             @Override
             public void onSuccess(File response) {
                 log("downloadAsync onSuccess:" + response.getAbsolutePath());
+                toast("downloadAsync onSuccess.");
             }
         });
     }
@@ -94,21 +111,25 @@ public class MainActivity extends AppCompatActivity {
         File file = getAssetsFile();
         if (file == null || !file.exists())
             return;
-        Http.uploadAsync("http://res.qiujuer.net/res", "file", file, new HttpCallback<String>() {
+        Http.uploadAsync("http://res.qiujuer.net/res", "file", file, new UiCallback<String>() {
             @Override
             public void onProgress(long current, long count) {
                 super.onProgress(current, count);
                 log("uploadAsync onProgress:" + current + "/" + count);
+                mUpload.setProgress((int) ((current * 100.00 / count)));
             }
 
             @Override
             public void onError(Request request, Response response, Exception e) {
+                e.printStackTrace();
                 log("uploadAsync onError");
+                toast("uploadAsync onError.");
             }
 
             @Override
             public void onSuccess(String response) {
                 log("uploadAsync onSuccess:" + response);
+                toast("uploadAsync onSuccess.");
             }
         });
     }
@@ -151,4 +172,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MAIN-LOG", str);
     }
 
+    void toast(String str) {
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+    }
 }

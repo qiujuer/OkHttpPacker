@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "net.qiujuer.sample.okhttppacker"
+        applicationId "net.qiujuer.sample.okhttp"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1

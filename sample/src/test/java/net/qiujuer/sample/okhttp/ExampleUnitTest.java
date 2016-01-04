@@ -1,4 +1,4 @@
-package net.qiujuer.sample.okhttppacker;
+package net.qiujuer.sample.okhttp;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package net.qiujuer.sample.okhttppacker;
+package net.qiujuer.sample.okhttp;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
