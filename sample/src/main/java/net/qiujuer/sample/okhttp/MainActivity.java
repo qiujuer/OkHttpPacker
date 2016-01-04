@@ -12,8 +12,10 @@ import com.squareup.okhttp.Response;
 
 import net.qiujuer.common.okhttp.Http;
 import net.qiujuer.common.okhttp.Util;
-import net.qiujuer.common.okhttp.out.ThreadCallback;
-import net.qiujuer.common.okhttp.out.UiCallback;
+import net.qiujuer.common.okhttp.core.HttpCallback;
+import net.qiujuer.common.okhttp.io.StrParam;
+import net.qiujuer.common.okhttp.impl.ThreadCallback;
+import net.qiujuer.common.okhttp.impl.UiCallback;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,13 +34,35 @@ public class MainActivity extends AppCompatActivity {
         mUpload = (ProgressBar) findViewById(R.id.proUpload);
         mDownload = (ProgressBar) findViewById(R.id.proDownload);
 
-        initHttp();
+        //initHttp();
         get();
-        upload();
+        //post();
+        //upload();
         download();
     }
 
+    private void post() {
+        String value1 = "xxx";
+        String value2 = "xxx";
+        String url = "http://www.baidu.com";
+
+        Http.postAsync(url, new HttpCallback<String>() {
+                    @Override
+                    public void onError(Request request, Response response, Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onSuccess(String response) {
+                        log(response);
+                    }
+                },
+                new StrParam("value1", value1),
+                new StrParam("value2", value2));
+    }
+
     private void initHttp() {
+        Http.DEBUG = true;
         Http.enableSaveCookie(getApplication());
     }
 
