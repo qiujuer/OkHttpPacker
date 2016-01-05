@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void download() {
-        Http.downloadAsync("http://res.qiujuer.net/res/89CEC6699E00DC6093696CF7B625BAAC", getSDPath(), "download.cache", null, new UiCallback<File>() {
+        Http.downloadAsync("https://raw.githubusercontent.com/qiujuer/OkHttpPacker/master/release/sample.apk", getSDPath(), null, null, new UiCallback<File>() {
             @Override
             public void onProgress(long current, long count) {
                 super.onProgress(current, count);
