@@ -3,7 +3,8 @@ package net.qiujuer.common.okhttp.cookie;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
-import android.util.Log;
+
+import net.qiujuer.common.okhttp.Util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,8 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * on 15/11/25.
  */
 public class PersistentCookieStore implements CookieStore {
-    private static final String LOG_TAG = "PersistentCookieStore";
-    private static final String COOKIE_PREFS = "CookiePrefsFile";
+    private static final String COOKIE_PREFS = PersistentCookieStore.class.getName();
     private static final String COOKIE_NAME_PREFIX = "cookie_";
 
     private final HashMap<String, ConcurrentHashMap<String, HttpCookie>> cookies;
@@ -167,7 +167,7 @@ public class PersistentCookieStore implements CookieStore {
             ObjectOutputStream outputStream = new ObjectOutputStream(os);
             outputStream.writeObject(cookie);
         } catch (IOException e) {
-            Log.d(LOG_TAG, "IOException in encodeCookie", e);
+            Util.log("IOException in encodeCookie", e);
             return null;
         }
 
@@ -188,9 +188,9 @@ public class PersistentCookieStore implements CookieStore {
             ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
             cookie = ((SerializableHttpCookie) objectInputStream.readObject()).getCookie();
         } catch (IOException e) {
-            Log.d(LOG_TAG, "IOException in decodeCookie", e);
+            Util.log("IOException in decodeCookie", e);
         } catch (ClassNotFoundException e) {
-            Log.d(LOG_TAG, "ClassNotFoundException in decodeCookie", e);
+            Util.log("ClassNotFoundException in decodeCookie", e);
         }
 
         return cookie;

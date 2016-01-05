@@ -1,8 +1,5 @@
 package net.qiujuer.common.okhttp.core;
 
-import android.text.TextUtils;
-import android.util.Log;
-
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Interceptor;
@@ -11,9 +8,9 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
-import com.squareup.okhttp.internal.Util;
 
 import net.qiujuer.common.okhttp.DefaultCallback;
+import net.qiujuer.common.okhttp.Util;
 import net.qiujuer.common.okhttp.io.IOParam;
 import net.qiujuer.common.okhttp.io.StrParam;
 
@@ -97,7 +94,7 @@ public class HttpCore {
     }
 
     protected void callFailed(final HttpCallback callback, final Request request, final Response response, final Exception e) {
-        exception(e);
+        Util.exception(e);
         if (callback == null)
             return;
         callback.dispatchError(request, response, e);
@@ -115,6 +112,7 @@ public class HttpCore {
      * ============Delivery============
      */
     protected void deliveryAsyncResult(Request request, HttpCallback<?> callback) {
+        Util.log("onDelivery:" + request.url().toString());
         final HttpCallback<?> resCallBack = callback == null ? new DefaultCallback() : callback;
 
         //Call start
@@ -123,7 +121,7 @@ public class HttpCore {
         mOkHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(final Request request, final IOException e) {
-                log("onFailure:" + request.toString());
+                Util.log("onFailure:" + request.toString());
                 callFailed(resCallBack, request, null, e);
             }
 
@@ -131,13 +129,13 @@ public class HttpCore {
             public void onResponse(final Response response) {
                 try {
                     final String string = response.body().string();
-                    log("onResponse:" + string);
+                    Util.log("onResponse:" + string);
 
                     Object ret = mResolver.analysis(string, resCallBack.getClass());
 
                     callSuccess(resCallBack, ret);
                 } catch (IOException | com.google.gson.JsonParseException e) {
-                    log("onResponse Failure:" + response.request().toString());
+                    Util.log("onResponse Failure:" + response.request().toString());
                     callFailed(resCallBack, response.request(), response, e);
                 }
                 callAfter(resCallBack);
@@ -146,6 +144,7 @@ public class HttpCore {
     }
 
     protected <T> T deliveryResult(Class<T> tClass, Request request, HttpCallback<?> callback) {
+        Util.log("onDelivery:" + request.url().toString());
         if (callback == null && tClass == null)
             callback = new DefaultCallback();
         final Class<?> subClass = tClass == null ? callback.getClass() : tClass;
@@ -157,7 +156,7 @@ public class HttpCore {
         try {
             response = call.execute();
             String string = response.body().string();
-            log("onResponse:" + string);
+            Util.log("onResponse:" + string);
 
             ret = mResolver.analysis(string, subClass);
 
@@ -165,7 +164,7 @@ public class HttpCore {
 
         } catch (IOException | com.google.gson.JsonParseException e) {
             Request req = response == null ? request : response.request();
-            log("onResponse Failure:" + req.toString());
+            Util.log("onResponse Failure:" + req.toString());
             callFailed(callback, req, response, e);
         }
         callAfter(callback);
@@ -174,6 +173,7 @@ public class HttpCore {
 
 
     protected void deliveryAsyncResult(final Request request, final StreamCall call, final HttpCallback<?> callback) {
+        Util.log("onDelivery:" + request.url().toString());
         final HttpCallback<?> resCallBack = callback == null ? new DefaultCallback() : callback;
 
         //Call start
@@ -182,7 +182,7 @@ public class HttpCore {
         mOkHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(final Request request, final IOException e) {
-                log("onFailure:" + request.toString());
+                Util.log("onFailure:" + request.toString());
                 callFailed(resCallBack, request, null, e);
             }
 
@@ -192,7 +192,7 @@ public class HttpCore {
                 InputStream in = null;
                 byte[] buf = new byte[4096];
                 try {
-                    log("onResponse:Stream.");
+                    Util.log("onResponse:Stream.");
 
                     ResponseBody body = response.body();
                     bindResponseProgressCallback(request.body(), body, callback);
@@ -207,11 +207,11 @@ public class HttpCore {
                     // On success
                     call.onSuccess();
                 } catch (IOException e) {
-                    log("onResponse Failure:" + response.request().toString());
+                    Util.log("onResponse Failure:" + response.request().toString());
                     callFailed(resCallBack, response.request(), response, e);
                 } finally {
-                    Util.closeQuietly(in);
-                    Util.closeQuietly(out);
+                    com.squareup.okhttp.internal.Util.closeQuietly(in);
+                    com.squareup.okhttp.internal.Util.closeQuietly(out);
                 }
                 callAfter(resCallBack);
             }
@@ -411,19 +411,6 @@ public class HttpCore {
         }
     }
 
-
     // This value use to debug the log
     public static boolean DEBUG = false;
-
-    // Show log
-    protected static void log(String str) {
-        if (DEBUG && !TextUtils.isEmpty(str))
-            Log.d(TAG, str);
-    }
-
-    // Show Error
-    protected static void exception(Exception e) {
-        if (DEBUG && e != null)
-            e.printStackTrace();
-    }
 }

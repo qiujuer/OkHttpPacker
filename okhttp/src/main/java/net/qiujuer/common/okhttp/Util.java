@@ -2,7 +2,9 @@ package net.qiujuer.common.okhttp;
 
 
 import android.text.TextUtils;
+import android.util.Log;
 
+import net.qiujuer.common.okhttp.core.HttpCore;
 import net.qiujuer.common.okhttp.io.IOParam;
 import net.qiujuer.common.okhttp.io.StrParam;
 
@@ -21,6 +23,8 @@ import java.util.Set;
  */
 @SuppressWarnings("ALL")
 public final class Util {
+
+    private static final String LOG_TAG = "QOK";
 
     public static <T> T[] listToParams(List<T> params, Class<T> tClass) {
         if (params == null || params.size() == 0)
@@ -107,5 +111,22 @@ public final class Util {
             }
         }
         return file;
+    }
+
+    // Show log
+    public static void log(String msg) {
+        if (HttpCore.DEBUG && !TextUtils.isEmpty(msg))
+            Log.d(LOG_TAG, msg);
+    }
+
+    public static void log(String msg, Throwable tr) {
+        if (HttpCore.DEBUG && !TextUtils.isEmpty(msg))
+            Log.d(LOG_TAG, msg, tr);
+    }
+
+    // Show Error
+    public static void exception(Exception e) {
+        if (HttpCore.DEBUG && e != null)
+            e.printStackTrace();
     }
 }

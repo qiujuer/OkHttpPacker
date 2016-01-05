@@ -72,7 +72,7 @@ public class Http extends HttpCore {
             CookieManager manager = (CookieManager) handler;
             CookieStore store = manager.getCookieStore();
             if (store != null) {
-                log(store.toString());
+                Util.log(store.toString());
                 try {
                     List<HttpCookie> cookies = store.getCookies();
                     if (cookies.size() > 0) {
