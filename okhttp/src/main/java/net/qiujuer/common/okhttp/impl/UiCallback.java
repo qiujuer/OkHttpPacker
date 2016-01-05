@@ -31,18 +31,18 @@ import net.qiujuer.genius.kit.util.UiKit;
  */
 public abstract class UiCallback<T> extends HttpCallback<T> {
     @Override
-    protected void dispatchError(final Request request, final Response response, final Exception e) {
-        UiKit.runOnMainThreadAsync(new Runnable() {
+    protected void dispatchFailure(final Request request, final Response response, final Exception e) {
+        UiKit.runOnMainThreadSync(new Runnable() {
             @Override
             public void run() {
-                onError(request, response, e);
+                onFailure(request, response, e);
             }
         });
     }
 
     @Override
     protected void dispatchSuccess(final T response) {
-        UiKit.runOnMainThreadAsync(new Runnable() {
+        UiKit.runOnMainThreadSync(new Runnable() {
             @Override
             public void run() {
                 onSuccess(response);
@@ -52,7 +52,7 @@ public abstract class UiCallback<T> extends HttpCallback<T> {
 
     @Override
     public void dispatchProgress(final long current, final long count) {
-        UiKit.runOnMainThreadAsync(new Runnable() {
+        UiKit.runOnMainThreadSync(new Runnable() {
             @Override
             public void run() {
                 onProgress(current, count);

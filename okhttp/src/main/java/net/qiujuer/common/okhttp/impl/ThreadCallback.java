@@ -28,11 +28,11 @@ import net.qiujuer.common.okhttp.core.HttpCallback;
  * This callback to call method by background thread
  */
 public abstract class ThreadCallback<T> extends HttpCallback<T> {
-    protected void dispatchBefore(final Request request) {
-        onBefore(request);
+    protected void dispatchStart(final Request request) {
+        onStart(request);
     }
 
-    protected void dispatchAfter() {
-        onAfter();
+    protected void dispatchFinish() {
+        onFinish();
     }
 }

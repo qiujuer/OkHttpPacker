@@ -20,8 +20,6 @@
  */
 package net.qiujuer.common.okhttp;
 
-import android.util.Log;
-
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
@@ -32,17 +30,17 @@ import net.qiujuer.common.okhttp.impl.ThreadCallback;
  */
 public final class DefaultCallback extends ThreadCallback<String> {
     @Override
-    public void onError(Request request, Response response, Exception e) {
-        Log.d("Callback", "onError.");
+    public void onFailure(Request request, Response response, Exception e) {
+        Util.log("onFailed.");
     }
 
     @Override
     public void onSuccess(String response) {
-        Log.d("Callback", "onSuccess:" + response);
+        Util.log("onSuccess:" + response);
     }
 
     @Override
     public void onProgress(long current, long count) {
-        Log.d("Callback", "onProgress:" + current + "/" + count);
+        Util.log("onProgress:" + current + "/" + count);
     }
 }

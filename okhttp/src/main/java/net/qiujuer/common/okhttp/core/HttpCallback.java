@@ -29,26 +29,26 @@ import net.qiujuer.genius.kit.util.UiKit;
  * This is http callback
  */
 public abstract class HttpCallback<T> implements ProgressListener {
-    protected void dispatchBefore(final Request request) {
-        UiKit.runOnMainThreadAsync(new Runnable() {
+    protected void dispatchStart(final Request request) {
+        UiKit.runOnMainThreadSync(new Runnable() {
             @Override
             public void run() {
-                onBefore(request);
+                onStart(request);
             }
         });
     }
 
-    protected void dispatchAfter() {
-        UiKit.runOnMainThreadAsync(new Runnable() {
+    protected void dispatchFinish() {
+        UiKit.runOnMainThreadSync(new Runnable() {
             @Override
             public void run() {
-                onAfter();
+                onFinish();
             }
         });
     }
 
-    protected void dispatchError(Request request, Response response, Exception e) {
-        onError(request, response, e);
+    protected void dispatchFailure(Request request, Response response, Exception e) {
+        onFailure(request, response, e);
     }
 
     protected void dispatchSuccess(T response) {
@@ -59,16 +59,16 @@ public abstract class HttpCallback<T> implements ProgressListener {
         onProgress(current, count);
     }
 
-    public void onBefore(Request request) {
+    public void onStart(Request request) {
     }
 
-    public void onAfter() {
+    public void onFinish() {
     }
 
     public void onProgress(long current, long count) {
     }
 
-    public abstract void onError(Request request, Response response, Exception e);
+    public abstract void onFailure(Request request, Response response, Exception e);
 
     public abstract void onSuccess(T response);
 

@@ -100,23 +100,23 @@ public class HttpCore {
     /**
      * ============Call============
      */
-    protected void callBefore(final HttpCallback<?> callback, final Request request) {
+    protected void callStart(final HttpCallback<?> callback, final Request request) {
         if (callback == null)
             return;
-        callback.dispatchBefore(request);
+        callback.dispatchStart(request);
     }
 
-    protected void callAfter(final HttpCallback<?> callback) {
+    protected void callFinish(final HttpCallback<?> callback) {
         if (callback == null)
             return;
-        callback.dispatchAfter();
+        callback.dispatchFinish();
     }
 
-    protected void callFailed(final HttpCallback callback, final Request request, final Response response, final Exception e) {
+    protected void callFailure(final HttpCallback callback, final Request request, final Response response, final Exception e) {
         Util.exception(e);
         if (callback == null)
             return;
-        callback.dispatchError(request, response, e);
+        callback.dispatchFailure(request, response, e);
     }
 
     @SuppressWarnings("unchecked")
@@ -135,13 +135,13 @@ public class HttpCore {
         final HttpCallback<?> resCallBack = callback == null ? new DefaultCallback() : callback;
 
         //Call start
-        callBefore(resCallBack, request);
+        callStart(resCallBack, request);
 
         mOkHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(final Request request, final IOException e) {
                 Util.log("onFailure:" + request.toString());
-                callFailed(resCallBack, request, null, e);
+                callFailure(resCallBack, request, null, e);
             }
 
             @Override
@@ -155,9 +155,9 @@ public class HttpCore {
                     callSuccess(resCallBack, ret);
                 } catch (IOException | com.google.gson.JsonParseException e) {
                     Util.log("onResponse Failure:" + response.request().toString());
-                    callFailed(resCallBack, response.request(), response, e);
+                    callFailure(resCallBack, response.request(), response, e);
                 }
-                callAfter(resCallBack);
+                callFinish(resCallBack);
             }
         });
     }
@@ -168,7 +168,7 @@ public class HttpCore {
             callback = new DefaultCallback();
         final Class<?> subClass = tClass == null ? callback.getClass() : tClass;
 
-        callBefore(callback, request);
+        callStart(callback, request);
         Call call = mOkHttpClient.newCall(request);
         Response response = null;
         Object ret = null;
@@ -184,9 +184,9 @@ public class HttpCore {
         } catch (IOException | com.google.gson.JsonParseException e) {
             Request req = response == null ? request : response.request();
             Util.log("onResponse Failure:" + req.toString());
-            callFailed(callback, req, response, e);
+            callFailure(callback, req, response, e);
         }
-        callAfter(callback);
+        callFinish(callback);
         return (T) ret;
     }
 
@@ -196,13 +196,13 @@ public class HttpCore {
         final HttpCallback<?> resCallBack = callback == null ? new DefaultCallback() : callback;
 
         //Call start
-        callBefore(resCallBack, request);
+        callStart(resCallBack, request);
 
         mOkHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(final Request request, final IOException e) {
                 Util.log("onFailure:" + request.toString());
-                callFailed(resCallBack, request, null, e);
+                callFailure(resCallBack, request, null, e);
             }
 
             @Override
@@ -227,12 +227,12 @@ public class HttpCore {
                     call.onSuccess();
                 } catch (IOException e) {
                     Util.log("onResponse Failure:" + response.request().toString());
-                    callFailed(resCallBack, response.request(), response, e);
+                    callFailure(resCallBack, response.request(), response, e);
                 } finally {
                     com.squareup.okhttp.internal.Util.closeQuietly(in);
                     com.squareup.okhttp.internal.Util.closeQuietly(out);
                 }
-                callAfter(resCallBack);
+                callFinish(resCallBack);
             }
         });
     }
@@ -425,8 +425,8 @@ public class HttpCore {
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            callFailed(callback, request, null, e);
-            callAfter(callback);
+            callFailure(callback, request, null, e);
+            callFinish(callback);
         }
     }
 
