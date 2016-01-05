@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/qiujuer/OkHttpPacker'
     gitUrl = 'https://github.com/qiujuer/OkHttpPacker.git'
 
-    libraryVersion = '0.5.0'
+    libraryVersion = '0.6.0'
 
     developerId = 'qiujuer'
     developerName = 'Ju Qiu'
@@ -31,8 +31,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 50
-        versionName "0.5.0"
+        versionCode 60
+        versionName "0.6.0"
     }
     buildTypes {
         release {
