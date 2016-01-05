@@ -13,9 +13,9 @@ import com.squareup.okhttp.Response;
 import net.qiujuer.common.okhttp.Http;
 import net.qiujuer.common.okhttp.Util;
 import net.qiujuer.common.okhttp.core.HttpCallback;
-import net.qiujuer.common.okhttp.io.StrParam;
 import net.qiujuer.common.okhttp.impl.ThreadCallback;
 import net.qiujuer.common.okhttp.impl.UiCallback;
+import net.qiujuer.common.okhttp.io.StrParam;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,10 +34,10 @@ public class MainActivity extends AppCompatActivity {
         mUpload = (ProgressBar) findViewById(R.id.proUpload);
         mDownload = (ProgressBar) findViewById(R.id.proDownload);
 
-        //initHttp();
+        initHttp();
         get();
         //post();
-        //upload();
+        upload();
         download();
     }
 
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         Http.postAsync(url, new HttpCallback<String>() {
                     @Override
-                    public void onError(Request request, Response response, Exception e) {
+                    public void onFailure(Request request, Response response, Exception e) {
                         e.printStackTrace();
                     }
 
@@ -78,8 +78,8 @@ public class MainActivity extends AppCompatActivity {
 
                 str = Http.getSync(url, new ThreadCallback<String>() {
                     @Override
-                    public void onError(Request request, Response response, Exception e) {
-                        log("getSync2:onError");
+                    public void onFailure(Request request, Response response, Exception e) {
+                        log("getSync2:onFailed");
                     }
 
                     @Override
@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
 
         Http.getAsync(url, new UiCallback<String>() {
             @Override
-            public void onError(Request request, Response response, Exception e) {
-                log("getAsync:onError");
+            public void onFailure(Request request, Response response, Exception e) {
+                log("getAsync:onFailed");
             }
 
             @Override
@@ -114,10 +114,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(Request request, Response response, Exception e) {
+            public void onFailure(Request request, Response response, Exception e) {
                 e.printStackTrace();
-                log("downloadAsync onError");
-                toast("downloadAsync onError.");
+                log("downloadAsync onFailed");
+                toast("downloadAsync onFailed.");
             }
 
             @Override
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         File file = getAssetsFile();
         if (file == null || !file.exists())
             return;
-        Http.uploadAsync("http://res.qiujuer.net/res", "file", file, new UiCallback<String>() {
+        Http.uploadAsync("http://tietuku.com/updo", "file", file, new UiCallback<String>() {
             @Override
             public void onProgress(long current, long count) {
                 super.onProgress(current, count);
@@ -144,10 +144,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(Request request, Response response, Exception e) {
+            public void onFailure(Request request, Response response, Exception e) {
                 e.printStackTrace();
-                log("uploadAsync onError");
-                toast("uploadAsync onError.");
+                log("uploadAsync onFailed");
+                toast("uploadAsync onFailed.");
             }
 
             @Override
@@ -161,8 +161,8 @@ public class MainActivity extends AppCompatActivity {
     public File getAssetsFile() {
         File file = null;
         try {
-            file = Util.makeFile(new File(getSDPath() + "/upload.cache"));
-            InputStream is = getAssets().open("data.cache");
+            file = Util.makeFile(new File(getSDPath() + "/upload.gif"));
+            InputStream is = getAssets().open("upload.gif");
             FileOutputStream fos = new FileOutputStream(file);
             byte[] buffer = new byte[1024];
             while (true) {
