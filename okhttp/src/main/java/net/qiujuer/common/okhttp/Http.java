@@ -55,7 +55,7 @@ public class Http extends HttpCore {
     private Http() {
         super(new DefaultResolver(), new DefaultRequestBuilder());
         // ConnectTimeOut
-        mOkHttpClient.setConnectTimeout(10 * 1000, TimeUnit.MILLISECONDS);
+        mOkHttpClient.setConnectTimeout(20 * 1000, TimeUnit.MILLISECONDS);
         // To intercept the Response
         interceptToProgressResponse();
     }
