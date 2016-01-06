@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onSuccess(String response) {
+                    public void onSuccess(String response, int code) {
                         log(response);
                     }
                 },
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onSuccess(String response) {
+                    public void onSuccess(String response, int code) {
                         log("getSync2:onSuccess:" + response);
                     }
                 });
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onSuccess(String response) {
+            public void onSuccess(String response, int code) {
                 log("getAsync:onSuccess:" + response);
             }
         });
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onSuccess(File response) {
+            public void onSuccess(File response, int code) {
                 log("downloadAsync onSuccess:" + response.getAbsolutePath());
                 toast("downloadAsync onSuccess.");
             }
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onSuccess(String response) {
+            public void onSuccess(String response, int code) {
                 log("uploadAsync onSuccess:" + response);
                 toast("uploadAsync onSuccess.");
             }
