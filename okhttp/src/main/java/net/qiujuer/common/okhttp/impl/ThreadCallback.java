@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
  * Created 1/1/2016
- * Changed 1/1/2016
+ * Changed 1/6/2016
  * Version 1.0.0
  * Author Qiujuer
  *
@@ -23,6 +23,7 @@ package net.qiujuer.common.okhttp.impl;
 import com.squareup.okhttp.Request;
 
 import net.qiujuer.common.okhttp.core.HttpCallback;
+
 
 /**
  * This callback to call method by background thread

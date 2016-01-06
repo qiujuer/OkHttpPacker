@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
  * Created 1/1/2016
- * Changed 1/1/2016
+ * Changed 1/6/2016
  * Version 1.0.0
  * Author Qiujuer
  *
@@ -21,40 +21,37 @@
 package net.qiujuer.common.okhttp.core;
 
 import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.RequestBody;
 
 import java.io.IOException;
 
 import okio.Buffer;
-import okio.BufferedSource;
-import okio.ForwardingSource;
+import okio.BufferedSink;
+import okio.ForwardingSink;
 import okio.Okio;
-import okio.Source;
+import okio.Sink;
 
 /**
- * This response body extend okhttp by progress
+ * This request body extend okhttp by progress
  */
-public class ResponseBody extends com.squareup.okhttp.ResponseBody {
-    private final com.squareup.okhttp.ResponseBody mBody;
+public class ForwardRequestBody extends RequestBody {
+    private final RequestBody mBody;
     private ProgressListener mListener;
-    private BufferedSource mSource;
-
-    public ResponseBody(com.squareup.okhttp.ResponseBody body) {
-        this.mBody = body;
-    }
 
     @Override
-    public void close() throws IOException {
-        this.mBody.close();
+    public long contentLength() throws IOException {
+        return mBody.contentLength();
+    }
+
+    private BufferedSink mSink;
+
+    public ForwardRequestBody(RequestBody body) {
+        this.mBody = body;
     }
 
     @Override
     public MediaType contentType() {
         return mBody.contentType();
-    }
-
-    @Override
-    public long contentLength() throws IOException {
-        return mBody.contentLength();
     }
 
     public void setListener(ProgressListener listener) {
@@ -66,26 +63,37 @@ public class ResponseBody extends com.squareup.okhttp.ResponseBody {
     }
 
     @Override
-    public BufferedSource source() throws IOException {
-        if (mSource == null) {
-            mSource = Okio.buffer(source(mBody.source()));
+    public void writeTo(BufferedSink sink) throws IOException {
+        if (mSink == null) {
+            mSink = Okio.buffer(sink(sink));
         }
-        return mSource;
+        // Write in
+        mBody.writeTo(mSink);
+        // flush the buffer
+        mSink.flush();
     }
 
-    private Source source(Source source) {
-        return new ForwardingSource(source) {
-            long readCount = 0L;
+    private Sink sink(Sink sink) {
+        return new ForwardingSink(sink) {
+            long writeCount = 0L;
+            long contentLength = 0L;
 
             @Override
-            public long read(Buffer sink, long byteCount) throws IOException {
-                long count = super.read(sink, byteCount);
-                readCount += count != -1 ? count : 0;
+            public void write(Buffer source, long byteCount) throws IOException {
+                // call write
+                super.write(source, byteCount);
+
+                // Length
+                if (contentLength == 0) {
+                    contentLength = contentLength();
+                }
+
+                // Add count
+                writeCount += byteCount;
                 ProgressListener listener = mListener;
                 if (listener != null) {
-                    listener.dispatchProgress(readCount, mBody.contentLength());
+                    listener.dispatchProgress(writeCount, mBody.contentLength());
                 }
-                return count;
             }
         };
     }

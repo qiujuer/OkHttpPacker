@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
  * Created 1/1/2016
- * Changed 1/1/2016
+ * Changed 1/6/2016
  * Version 1.0.0
  * Author Qiujuer
  *
@@ -19,6 +19,8 @@
  * limitations under the License.
  */
 package net.qiujuer.common.okhttp.core;
+
+import android.text.TextUtils;
 
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
@@ -55,6 +57,7 @@ public class HttpCore {
 
     private static final String TAG = HttpCore.class.getName();
 
+    protected int mBufferSize = 2048;
     protected OkHttpClient mOkHttpClient;
     protected Resolver mResolver;
     protected RequestBuilder mBuilder;
@@ -88,7 +91,7 @@ public class HttpCore {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 Response response = chain.proceed(chain.request());
-                ResponseBody body = new net.qiujuer.common.okhttp.core.ResponseBody(response.body());
+                ResponseBody body = new ForwardResponseBody(response.body());
                 return response.newBuilder()
                         .body(body)
                         .build();
@@ -120,11 +123,11 @@ public class HttpCore {
     }
 
     @SuppressWarnings("unchecked")
-    protected void callSuccess(final HttpCallback callback, final Object object) {
+    protected void callSuccess(final HttpCallback callback, final Object object, final int code) {
         if (callback == null)
             return;
 
-        callback.dispatchSuccess(object);
+        callback.dispatchSuccess(object, code);
     }
 
     /**
@@ -147,13 +150,18 @@ public class HttpCore {
             @Override
             public void onResponse(final Response response) {
                 try {
+                    Object ret = null;
                     final String string = response.body().string();
-                    Util.log("onResponse:" + string);
+                    final boolean haveValue = !TextUtils.isEmpty(string);
 
-                    Object ret = mResolver.analysis(string, resCallBack.getClass());
+                    Util.log("onResponse:Code:%d Body:%s.", response.code(), (haveValue ? string : "null"));
 
-                    callSuccess(resCallBack, ret);
-                } catch (IOException | com.google.gson.JsonParseException e) {
+                    if (haveValue) {
+                        ret = mResolver.analysis(string, resCallBack.getClass());
+                    }
+
+                    callSuccess(resCallBack, ret, response.code());
+                } catch (Exception e) {
                     Util.log("onResponse Failure:" + response.request().toString());
                     callFailure(resCallBack, response.request(), response, e);
                 }
@@ -174,14 +182,17 @@ public class HttpCore {
         Object ret = null;
         try {
             response = call.execute();
-            String string = response.body().string();
-            Util.log("onResponse:" + string);
+            final String string = response.body().string();
+            final boolean haveValue = !TextUtils.isEmpty(string);
 
-            ret = mResolver.analysis(string, subClass);
+            Util.log("onResponse:Code:%d Body:%s.", response.code(), (haveValue ? string : "null"));
 
-            callSuccess(callback, ret);
+            if (haveValue) {
+                ret = mResolver.analysis(string, subClass);
+            }
 
-        } catch (IOException | com.google.gson.JsonParseException e) {
+            callSuccess(callback, ret, response.code());
+        } catch (Exception e) {
             Request req = response == null ? request : response.request();
             Util.log("onResponse Failure:" + req.toString());
             callFailure(callback, req, response, e);
@@ -209,9 +220,9 @@ public class HttpCore {
             public void onResponse(final Response response) {
                 OutputStream out = call.getOutputStream();
                 InputStream in = null;
-                byte[] buf = new byte[4096];
+                byte[] buf = new byte[mBufferSize];
                 try {
-                    Util.log("onResponse:Stream.");
+                    Util.log("onResponse:Code:%d Stream.", response.code());
 
                     ResponseBody body = response.body();
                     bindResponseProgressCallback(request.body(), body, callback);
@@ -224,8 +235,8 @@ public class HttpCore {
                         out.flush();
                     }
                     // On success
-                    call.onSuccess();
-                } catch (IOException e) {
+                    call.onSuccess(response.code());
+                } catch (Exception e) {
                     Util.log("onResponse Failure:" + response.request().toString());
                     callFailure(resCallBack, response.request(), response, e);
                 } finally {
@@ -238,13 +249,13 @@ public class HttpCore {
     }
 
     private void bindResponseProgressCallback(RequestBody requestBody, ResponseBody responseBody, HttpCallback<?> callback) {
-        if (requestBody instanceof net.qiujuer.common.okhttp.core.RequestBody) {
-            if (((net.qiujuer.common.okhttp.core.RequestBody) requestBody).getListener() != null) {
+        if (requestBody instanceof ForwardRequestBody) {
+            if (((ForwardRequestBody) requestBody).getListener() != null) {
                 return;
             }
         }
-        if (responseBody instanceof net.qiujuer.common.okhttp.core.ResponseBody) {
-            ((net.qiujuer.common.okhttp.core.ResponseBody) responseBody).setListener(callback);
+        if (responseBody instanceof ForwardResponseBody) {
+            ((ForwardResponseBody) responseBody).setListener(callback);
         }
     }
 
@@ -306,7 +317,7 @@ public class HttpCore {
         async(builder, tag, callback);
     }
 
-    protected void executePostAsync(HttpCallback callback, String url, Object tag, com.squareup.okhttp.RequestBody body) {
+    protected void executePostAsync(HttpCallback callback, String url, Object tag, RequestBody body) {
         Request.Builder builder = mBuilder.builderPost(url, body);
         async(builder, tag, callback);
     }
@@ -380,9 +391,9 @@ public class HttpCore {
 
         Request request = builder.build();
         if (callback != null) {
-            com.squareup.okhttp.RequestBody requestBody = request.body();
-            if (requestBody instanceof net.qiujuer.common.okhttp.core.RequestBody) {
-                ((net.qiujuer.common.okhttp.core.RequestBody) (requestBody)).setListener(callback);
+            RequestBody requestBody = request.body();
+            if (requestBody instanceof ForwardRequestBody) {
+                ((ForwardRequestBody) (requestBody)).setListener(callback);
             }
         }
         return sync(tClass, request, callback);
@@ -393,9 +404,9 @@ public class HttpCore {
 
         Request request = builder.build();
         if (callback != null) {
-            com.squareup.okhttp.RequestBody requestBody = request.body();
-            if (requestBody instanceof net.qiujuer.common.okhttp.core.RequestBody) {
-                ((net.qiujuer.common.okhttp.core.RequestBody) (requestBody)).setListener(callback);
+            RequestBody requestBody = request.body();
+            if (requestBody instanceof ForwardRequestBody) {
+                ((ForwardRequestBody) (requestBody)).setListener(callback);
             }
         }
         async(request, callback);
@@ -407,7 +418,7 @@ public class HttpCore {
 
         try {
             // On before crete stream, we need make new file
-            net.qiujuer.common.okhttp.Util.makeFile(file);
+            Util.makeFile(file);
 
             final FileOutputStream out = new FileOutputStream(file);
 
@@ -418,8 +429,8 @@ public class HttpCore {
                 }
 
                 @Override
-                public void onSuccess() {
-                    callSuccess(callback, file);
+                public void onSuccess(int code) {
+                    callSuccess(callback, file, code);
                 }
             }, callback);
 

@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
  * Created 1/1/2016
- * Changed 1/1/2016
+ * Changed 1/6/2016
  * Version 1.0.0
  * Author Qiujuer
  *
@@ -137,6 +137,12 @@ public final class Util {
         if (HttpCore.DEBUG && !TextUtils.isEmpty(msg))
             Log.d(LOG_TAG, msg);
     }
+
+    public static void log(String fromat, Object... strs) {
+        if (HttpCore.DEBUG && !TextUtils.isEmpty(fromat) && strs != null)
+            Log.d(LOG_TAG, String.format(fromat, strs));
+    }
+
 
     public static void log(String msg, Throwable tr) {
         if (HttpCore.DEBUG && !TextUtils.isEmpty(msg))

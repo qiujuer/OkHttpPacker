@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
  * Created 1/1/2016
- * Changed 1/1/2016
+ * Changed 1/6/2016
  * Version 1.0.0
  * Author Qiujuer
  *
@@ -30,6 +30,7 @@ import com.squareup.okhttp.RequestBody;
 
 import net.qiujuer.common.okhttp.Http;
 import net.qiujuer.common.okhttp.Util;
+import net.qiujuer.common.okhttp.core.ForwardRequestBody;
 import net.qiujuer.common.okhttp.core.RequestBuilder;
 import net.qiujuer.common.okhttp.io.IOParam;
 import net.qiujuer.common.okhttp.io.StrParam;
@@ -206,8 +207,8 @@ public class RequestCallBuilder implements RequestBuilder {
     public Request.Builder builderPost(String url, RequestBody body) {
         Request.Builder builder = createBuilder();
         builder.url(url);
-        // In this we proxy the RequestBody to support Progress
-        builder.post(new net.qiujuer.common.okhttp.core.RequestBody(body));
+        // In this we proxy the ForwardRequestBody to support Progress
+        builder.post(new ForwardRequestBody(body));
         return builder;
     }
 

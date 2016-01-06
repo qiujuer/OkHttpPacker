@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
  * Created 1/1/2016
- * Changed 1/1/2016
+ * Changed 1/6/2016
  * Version 1.0.0
  * Author Qiujuer
  *
@@ -51,8 +51,8 @@ public abstract class HttpCallback<T> implements ProgressListener {
         onFailure(request, response, e);
     }
 
-    protected void dispatchSuccess(T response) {
-        onSuccess(response);
+    protected void dispatchSuccess(T response, int code) {
+        onSuccess(response, code);
     }
 
     public void dispatchProgress(long current, long count) {
@@ -70,6 +70,6 @@ public abstract class HttpCallback<T> implements ProgressListener {
 
     public abstract void onFailure(Request request, Response response, Exception e);
 
-    public abstract void onSuccess(T response);
+    public abstract void onSuccess(T response, int code);
 
 }

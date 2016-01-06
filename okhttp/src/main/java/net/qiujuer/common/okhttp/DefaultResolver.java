@@ -20,6 +20,7 @@
  */
 package net.qiujuer.common.okhttp;
 
+
 import net.qiujuer.common.okhttp.impl.GsonResolver;
 
 /**

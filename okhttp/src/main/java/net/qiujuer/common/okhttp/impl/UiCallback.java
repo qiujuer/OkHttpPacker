@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
  * Created 1/1/2016
- * Changed 1/1/2016
+ * Changed 1/6/2016
  * Version 1.0.0
  * Author Qiujuer
  *
@@ -41,11 +41,11 @@ public abstract class UiCallback<T> extends HttpCallback<T> {
     }
 
     @Override
-    protected void dispatchSuccess(final T response) {
+    protected void dispatchSuccess(final T response, final int code) {
         UiKit.runOnMainThreadSync(new Runnable() {
             @Override
             public void run() {
-                onSuccess(response);
+                onSuccess(response, code);
             }
         });
     }

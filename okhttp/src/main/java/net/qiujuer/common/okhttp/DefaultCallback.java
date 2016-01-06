@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
  * Created 1/1/2016
- * Changed 1/1/2016
+ * Changed 1/6/2016
  * Version 1.0.0
  * Author Qiujuer
  *
@@ -25,18 +25,19 @@ import com.squareup.okhttp.Response;
 
 import net.qiujuer.common.okhttp.impl.ThreadCallback;
 
+
 /**
  * Default callback
  */
 public final class DefaultCallback extends ThreadCallback<String> {
     @Override
     public void onFailure(Request request, Response response, Exception e) {
-        Util.log("onFailed.");
+        Util.log("onFailed:" + (request != null ? request.url() : "url is null"));
     }
 
     @Override
-    public void onSuccess(String response) {
-        Util.log("onSuccess:" + response);
+    public void onSuccess(String response, int code) {
+        Util.log("onSuccess:Code:%d String:%s", code, response);
     }
 
     @Override
