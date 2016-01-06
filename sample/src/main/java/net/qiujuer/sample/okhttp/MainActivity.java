@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         File file = getAssetsFile();
         if (file == null || !file.exists())
             return;
-        Http.uploadAsync("http://tietuku.com/updo", "file", file, new UiCallback<String>() {
+        Http.uploadAsync("http://img.hoop8.com/upload.php", "uploadimg", file, new UiCallback<String>() {
             @Override
             public void onProgress(long current, long count) {
                 super.onProgress(current, count);
