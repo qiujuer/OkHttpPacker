@@ -26,4 +26,4 @@ dependencies {
     compile 'net.qiujuer.genius:kit:1.1.0'
 }
 
-apply from: '../script/push.gradle'
+apply from: '../script/gradle-jcenter-push.gradle'
