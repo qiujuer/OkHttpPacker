@@ -1,38 +1,14 @@
 apply plugin: 'com.android.library'
 
-ext {
-    bintrayRepo = 'maven'
-    bintrayName = 'OkHttpPacker'
-
-    publishedGroupId = 'net.qiujuer.common'
-    libraryName = 'OkHttpPacker'
-    artifact = 'okhttp'
-
-    libraryDescription = 'A okhttp package, so that the use of okhttp is so easy.'
-
-    siteUrl = 'https://github.com/qiujuer/OkHttpPacker'
-    gitUrl = 'https://github.com/qiujuer/OkHttpPacker.git'
-
-    libraryVersion = '0.8.0'
-
-    developerId = 'qiujuer'
-    developerName = 'Ju Qiu'
-    developerEmail = 'qiujuer@live.cn'
-
-    licenseName = 'The Apache Software License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    allLicenses = ["Apache-2.0"]
-}
-
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion ANDROID_BUILD_SDK_VERSION as int
+    buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 23
-        versionCode 80
-        versionName "0.8.0"
+        minSdkVersion ANDROID_BUILD_MIN_SDK_VERSION
+        targetSdkVersion ANDROID_BUILD_TARGET_SDK_VERSION
+        versionCode VERSION_CODE as int
+        versionName VERSION_NAME
     }
     buildTypes {
         release {
@@ -50,6 +26,4 @@ dependencies {
     compile 'net.qiujuer.genius:kit:1.1.0'
 }
 
-
-apply from: '../script/install.gradle'
-apply from: '../script/bintray.gradle'
+apply from: '../script/push.gradle'
