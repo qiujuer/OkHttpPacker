@@ -7,6 +7,6 @@ A okhttp package, so that the use of okhttp is so easy.
 
 ```gradle
 dependencies {
-    compile 'net.qiujuer.common:okhttp:0.9.0'
+    compile 'net.qiujuer.common:okhttp:1.0.0'
 }
 ```
