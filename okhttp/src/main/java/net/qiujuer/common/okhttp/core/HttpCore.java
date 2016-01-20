@@ -145,6 +145,7 @@ public class HttpCore {
             public void onFailure(final Request request, final IOException e) {
                 Util.log("onFailure:" + request.toString());
                 callFailure(resCallBack, request, null, e);
+                callFinish(resCallBack);
             }
 
             @Override
@@ -214,6 +215,7 @@ public class HttpCore {
             public void onFailure(final Request request, final IOException e) {
                 Util.log("onFailure:" + request.toString());
                 callFailure(resCallBack, request, null, e);
+                callFinish(resCallBack);
             }
 
             @Override
