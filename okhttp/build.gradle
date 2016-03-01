@@ -21,9 +21,9 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.google.code.gson:gson:2.5'
-    compile 'com.squareup.okhttp:okhttp:2.7.1'
     compile 'net.qiujuer.genius:kit:1.5.0'
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.google.code.gson:gson:2.6.2'
 }
 
 apply from: '../script/gradle-jcenter-push.gradle'

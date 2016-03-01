@@ -20,11 +20,12 @@
  */
 package net.qiujuer.common.okhttp.impl;
 
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import net.qiujuer.common.okhttp.core.HttpCallback;
 import net.qiujuer.genius.kit.util.UiKit;
+
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * This callback to call method by UI thread

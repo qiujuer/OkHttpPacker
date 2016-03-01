@@ -7,9 +7,6 @@ import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
 import net.qiujuer.common.okhttp.Http;
 import net.qiujuer.common.okhttp.Util;
 import net.qiujuer.common.okhttp.core.HttpCallback;
@@ -20,6 +17,9 @@ import net.qiujuer.common.okhttp.io.StrParam;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -20,9 +20,10 @@
  */
 package net.qiujuer.common.okhttp.impl;
 
-import com.squareup.okhttp.Request;
 
 import net.qiujuer.common.okhttp.core.HttpCallback;
+
+import okhttp3.Request;
 
 
 /**

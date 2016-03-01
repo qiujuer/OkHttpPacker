@@ -22,12 +22,6 @@ package net.qiujuer.common.okhttp.impl;
 
 import android.util.Log;
 
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.MultipartBuilder;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-
 import net.qiujuer.common.okhttp.Http;
 import net.qiujuer.common.okhttp.Util;
 import net.qiujuer.common.okhttp.core.ForwardRequestBody;
@@ -39,6 +33,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 
 /**
@@ -68,7 +68,7 @@ public class RequestCallBuilder implements RequestBuilder {
         }
     }
 
-    protected FormEncodingBuilder buildFormBody(FormEncodingBuilder formEncodingBuilder) {
+    protected FormBody.Builder buildFormBody(FormBody.Builder formEncodingBuilder) {
         BuilderListener listener = mListener;
         if (listener != null) {
             listener.onBuildFormBody(formEncodingBuilder);
@@ -76,7 +76,7 @@ public class RequestCallBuilder implements RequestBuilder {
         return formEncodingBuilder;
     }
 
-    protected MultipartBuilder buildMultipartBody(MultipartBuilder multipartBuilder) {
+    protected MultipartBody.Builder buildMultipartBody(MultipartBody.Builder multipartBuilder) {
         BuilderListener listener = mListener;
         if (listener != null) {
             listener.onBuildMultipartBody(multipartBuilder);
@@ -98,7 +98,7 @@ public class RequestCallBuilder implements RequestBuilder {
     }
 
     protected RequestBody createFormBody(StrParam... strParams) {
-        FormEncodingBuilder formEncodingBuilder = new FormEncodingBuilder();
+        FormBody.Builder formEncodingBuilder = new FormBody.Builder();
         formEncodingBuilder = buildFormBody(formEncodingBuilder);
 
         // Add values
@@ -119,8 +119,8 @@ public class RequestCallBuilder implements RequestBuilder {
     }
 
     protected RequestBody createMultipartBody(StrParam[] stringStrParams, IOParam[] IOParams) {
-        MultipartBuilder builder = new MultipartBuilder();
-        builder.type(MultipartBuilder.FORM);
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        builder.setType(MultipartBody.FORM);
         builder = buildMultipartBody(builder);
 
         if (stringStrParams != null && stringStrParams.length > 0) {
@@ -283,8 +283,8 @@ public class RequestCallBuilder implements RequestBuilder {
 
         boolean onBuildGetParams(StringBuilder sb, boolean isFirst);
 
-        void onBuildFormBody(FormEncodingBuilder formEncodingBuilder);
+        void onBuildFormBody(FormBody.Builder formEncodingBuilder);
 
-        void onBuildMultipartBody(MultipartBuilder multipartBuilder);
+        void onBuildMultipartBody(MultipartBody.Builder multipartBuilder);
     }
 }

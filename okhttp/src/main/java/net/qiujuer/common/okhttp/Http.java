@@ -22,10 +22,6 @@ package net.qiujuer.common.okhttp;
 
 import android.content.Context;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.RequestBody;
-
-import net.qiujuer.common.okhttp.cookie.PersistentCookieStore;
 import net.qiujuer.common.okhttp.core.HttpCallback;
 import net.qiujuer.common.okhttp.core.HttpCore;
 import net.qiujuer.common.okhttp.io.IOParam;
@@ -38,13 +34,15 @@ import org.json.JSONObject;
 import java.io.File;
 import java.net.CookieHandler;
 import java.net.CookieManager;
-import java.net.CookiePolicy;
 import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 
 /**
  * This is okhttp main static class
@@ -54,10 +52,13 @@ public class Http extends HttpCore {
 
     private Http() {
         super(new DefaultResolver(), new DefaultRequestBuilder());
+
+        OkHttpClient.Builder builder = mOkHttpClient.newBuilder();
         // ConnectTimeOut
-        mOkHttpClient.setConnectTimeout(20 * 1000, TimeUnit.MILLISECONDS);
+        builder.connectTimeout(20 * 1000, TimeUnit.MILLISECONDS).build();
         // To intercept the Response
-        interceptToProgressResponse();
+        builder.addInterceptor(interceptToProgressResponse());
+        mOkHttpClient = builder.build();
     }
 
     public static Http getInstance() {
@@ -72,11 +73,11 @@ public class Http extends HttpCore {
     }
 
     public static void enableSaveCookie(Context context) {
-        getClient().setCookieHandler(new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL));
+        //getClient().setCookieHandler(new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL));
     }
 
     public static void removeCookie() {
-        CookieHandler handler = getClient().getCookieHandler();
+        CookieHandler handler = null;// getClient().getCookieHandler();
         if (handler != null && handler instanceof CookieManager) {
             CookieManager manager = (CookieManager) handler;
             CookieStore store = manager.getCookieStore();
@@ -86,7 +87,7 @@ public class Http extends HttpCore {
     }
 
     public static String getCookie() {
-        CookieHandler handler = getClient().getCookieHandler();
+        CookieHandler handler = null;// getClient().getCookieHandler();
         if (handler != null && handler instanceof CookieManager) {
             CookieManager manager = (CookieManager) handler;
             CookieStore store = manager.getCookieStore();
@@ -114,7 +115,7 @@ public class Http extends HttpCore {
     }
 
     public static void cancel(Object tag) {
-        getClient().cancel(tag);
+        //getClient().cancel(tag);
     }
 
 
