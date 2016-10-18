@@ -21,6 +21,9 @@
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
+group = POM_GROUP_ID
+version = VERSION_NAME
+
 afterEvaluate { project ->
     install {
         repositories.mavenInstaller {
@@ -140,4 +143,3 @@ bintray {
         }
     }
 }
-
