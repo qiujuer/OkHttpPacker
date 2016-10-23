@@ -73,7 +73,7 @@ public class Http extends HttpCore {
     }
 
     public static void enableSaveCookie(Context context) {
-        //getClient().setCookieHandler(new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL));
+        getClient().newBuilder().cookieJar(new net.qiujuer.common.okhttp.cookie.CookieManager());
     }
 
     public static void removeCookie() {
@@ -112,10 +112,6 @@ public class Http extends HttpCore {
 
     public static OkHttpClient getClient() {
         return getInstance().mOkHttpClient;
-    }
-
-    public static void cancel(Object tag) {
-        //getClient().cancel(tag);
     }
 
 
