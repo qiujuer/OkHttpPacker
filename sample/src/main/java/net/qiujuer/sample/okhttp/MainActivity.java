@@ -13,6 +13,9 @@ import net.qiujuer.common.okhttp.core.HttpCallback;
 import net.qiujuer.common.okhttp.impl.ThreadCallback;
 import net.qiujuer.common.okhttp.impl.UiCallback;
 import net.qiujuer.common.okhttp.io.StrParam;
+import net.qiujuer.sample.okhttp.vip.InfoBean;
+import net.qiujuer.sample.okhttp.vip.PageBean;
+import net.qiujuer.sample.okhttp.vip.ResultCallBack;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -36,9 +39,24 @@ public class MainActivity extends AppCompatActivity {
 
         initHttp();
         get();
+        vip();
         //post();
         upload();
         download();
+    }
+
+    private void vip() {
+        Http.getAsync("http://www.oschina.net/action/apiv2/banner?catalog=1", new ResultCallBack<PageBean<InfoBean>>() {
+            @Override
+            public void onRealSuccess(PageBean<InfoBean> response, int code) {
+                log(response.toString());
+            }
+
+            @Override
+            public void onFailure(Request request, Response response, Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     private void post() {
@@ -193,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void log(String str) {
-        Log.e("MAIN-LOG", str);
+        Log.d("MAIN-LOG", str);
     }
 
     void toast(String str) {
