@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void log(String str) {
-        Log.d("MAIN-LOG", str);
+        Log.e("MAIN-LOG", str);
     }
 
     void toast(String str) {

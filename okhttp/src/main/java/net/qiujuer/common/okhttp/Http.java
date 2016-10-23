@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
+ * Copyright (C) 2014-2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
- * Created 1/1/2016
- * Changed 1/6/2016
- * Version 1.0.0
  * Author Qiujuer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +19,7 @@ package net.qiujuer.common.okhttp;
 
 import android.content.Context;
 
+import net.qiujuer.common.okhttp.cookie.CookieManager;
 import net.qiujuer.common.okhttp.core.HttpCallback;
 import net.qiujuer.common.okhttp.core.HttpCore;
 import net.qiujuer.common.okhttp.io.IOParam;
@@ -32,15 +30,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookieStore;
-import java.net.HttpCookie;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 
@@ -73,38 +69,28 @@ public class Http extends HttpCore {
     }
 
     public static void enableSaveCookie(Context context) {
-        getClient().newBuilder().cookieJar(new net.qiujuer.common.okhttp.cookie.CookieManager());
+        getClient().newBuilder()
+                .cookieJar(CookieManager.createBySharedPreferences(context));
     }
 
-    public static void removeCookie() {
-        CookieHandler handler = null;// getClient().getCookieHandler();
-        if (handler != null && handler instanceof CookieManager) {
-            CookieManager manager = (CookieManager) handler;
-            CookieStore store = manager.getCookieStore();
-            if (store != null)
-                store.removeAll();
+    public static void removeAllCookie() {
+        CookieJar cookieJar = getClient().cookieJar();
+        if (cookieJar != null && cookieJar instanceof CookieManager) {
+            CookieManager manager = (CookieManager) cookieJar;
+            manager.removeAll();
         }
     }
 
     public static String getCookie() {
-        CookieHandler handler = null;// getClient().getCookieHandler();
-        if (handler != null && handler instanceof CookieManager) {
-            CookieManager manager = (CookieManager) handler;
-            CookieStore store = manager.getCookieStore();
-            if (store != null) {
-                Util.log(store.toString());
-                try {
-                    List<HttpCookie> cookies = store.getCookies();
-                    if (cookies.size() > 0) {
-                        String cookieStr = "";
-                        for (HttpCookie cookie : cookies) {
-                            cookieStr += cookie.toString();
-                        }
-                        return cookieStr;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        CookieJar cookieJar = getClient().cookieJar();
+        if (cookieJar != null && cookieJar instanceof CookieManager) {
+            CookieManager manager = (CookieManager) cookieJar;
+            try {
+                List<Cookie> cookies = manager.getCookies();
+                if (cookies != null)
+                    return Util.cookieHeader(cookies);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return "";
