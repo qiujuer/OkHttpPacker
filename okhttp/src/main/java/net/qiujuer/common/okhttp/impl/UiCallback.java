@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
+ * Copyright (C) 2014-2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
- * Created 1/1/2016
- * Changed 1/6/2016
- * Version 1.0.0
  * Author Qiujuer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +19,8 @@ package net.qiujuer.common.okhttp.impl;
 
 
 import net.qiujuer.common.okhttp.core.HttpCallback;
-import net.qiujuer.genius.kit.util.UiKit;
+import net.qiujuer.genius.kit.handler.Run;
+import net.qiujuer.genius.kit.handler.runable.Action;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -33,9 +31,9 @@ import okhttp3.Response;
 public abstract class UiCallback<T> extends HttpCallback<T> {
     @Override
     protected void dispatchFailure(final Request request, final Response response, final Exception e) {
-        UiKit.runOnMainThreadSync(new Runnable() {
+        Run.onUiSync(new Action() {
             @Override
-            public void run() {
+            public void call() {
                 onFailure(request, response, e);
             }
         });
@@ -43,9 +41,9 @@ public abstract class UiCallback<T> extends HttpCallback<T> {
 
     @Override
     protected void dispatchSuccess(final T response, final int code) {
-        UiKit.runOnMainThreadSync(new Runnable() {
+        Run.onUiSync(new Action() {
             @Override
-            public void run() {
+            public void call() {
                 onSuccess(response, code);
             }
         });
@@ -53,9 +51,9 @@ public abstract class UiCallback<T> extends HttpCallback<T> {
 
     @Override
     public void dispatchProgress(final long current, final long count) {
-        UiKit.runOnMainThreadSync(new Runnable() {
+        Run.onUiSync(new Action() {
             @Override
-            public void run() {
+            public void call() {
                 onProgress(current, count);
             }
         });

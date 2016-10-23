@@ -21,10 +21,10 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'net.qiujuer.genius:kit-reflect:2.0.0-beta9'
-    compile 'net.qiujuer.genius:kit-handler:2.0.0-beta8'
-    compile 'com.squareup.okhttp3:okhttp:3.2.0'
-    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'net.qiujuer.genius:kit-reflect:latest.integration'
+    compile 'net.qiujuer.genius:kit-handler:latest.integration'
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.google.code.gson:gson:2.7'
 }
 
 apply from: '../script/gradle-jcenter-push.gradle'
