@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
+ * Copyright (C) 2014-2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
- * Created 1/1/2016
- * Changed 1/6/2016
- * Version 1.0.0
  * Author Qiujuer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +17,11 @@
  */
 package net.qiujuer.common.okhttp;
 
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import net.qiujuer.common.okhttp.impl.ThreadCallback;
+
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 /**

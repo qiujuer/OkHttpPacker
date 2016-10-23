@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
+ * Copyright (C) 2014-2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
- * Created 1/1/2016
- * Changed 1/1/2016
- * Version 1.0.0
  * Author Qiujuer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,9 +17,6 @@
  */
 package net.qiujuer.common.okhttp.core;
 
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-
 import net.qiujuer.common.okhttp.io.IOParam;
 import net.qiujuer.common.okhttp.io.StrParam;
 
@@ -30,6 +24,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 
 /**

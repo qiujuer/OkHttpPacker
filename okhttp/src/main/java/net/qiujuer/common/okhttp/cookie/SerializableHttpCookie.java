@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
+ * Copyright (C) 2014-2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
- * Created 1/1/2016
- * Changed 1/1/2016
- * Version 1.0.0
  * Author Qiujuer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,23 +21,24 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.net.HttpCookie;
+
+import okhttp3.Cookie;
 
 /**
- * This class to Serializable http cookie
+ * This class to Serializable {@link Cookie}
  */
 public class SerializableHttpCookie implements Serializable {
-    private static final long serialVersionUID = 6374381323722046732L;
+    private static final long serialVersionUID = 5693281323722046475L;
 
-    private transient final HttpCookie cookie;
-    private transient HttpCookie clientCookie;
+    private transient final Cookie cookie;
+    private transient Cookie clientCookie;
 
-    public SerializableHttpCookie(HttpCookie cookie) {
+    public SerializableHttpCookie(Cookie cookie) {
         this.cookie = cookie;
     }
 
-    public HttpCookie getCookie() {
-        HttpCookie bestCookie = cookie;
+    public Cookie getCookie() {
+        Cookie bestCookie = cookie;
         if (clientCookie != null) {
             bestCookie = clientCookie;
         }
@@ -48,31 +46,40 @@ public class SerializableHttpCookie implements Serializable {
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
-        out.writeObject(cookie.getName());
-        out.writeObject(cookie.getValue());
-        out.writeObject(cookie.getComment());
-        out.writeObject(cookie.getCommentURL());
-        out.writeObject(cookie.getDomain());
-        out.writeLong(cookie.getMaxAge());
-        out.writeObject(cookie.getPath());
-        out.writeObject(cookie.getPortlist());
-        out.writeInt(cookie.getVersion());
-        out.writeBoolean(cookie.getSecure());
-        out.writeBoolean(cookie.getDiscard());
+        out.writeObject(cookie.name());
+        out.writeObject(cookie.value());
+        out.writeLong(cookie.expiresAt());
+        out.writeObject(cookie.domain());
+        out.writeObject(cookie.path());
+        out.writeBoolean(cookie.secure());
+        out.writeBoolean(cookie.httpOnly());
+        out.writeBoolean(cookie.hostOnly());
+        out.writeBoolean(cookie.persistent());
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         String name = (String) in.readObject();
         String value = (String) in.readObject();
-        clientCookie = new HttpCookie(name, value);
-        clientCookie.setComment((String) in.readObject());
-        clientCookie.setCommentURL((String) in.readObject());
-        clientCookie.setDomain((String) in.readObject());
-        clientCookie.setMaxAge(in.readLong());
-        clientCookie.setPath((String) in.readObject());
-        clientCookie.setPortlist((String) in.readObject());
-        clientCookie.setVersion(in.readInt());
-        clientCookie.setSecure(in.readBoolean());
-        clientCookie.setDiscard(in.readBoolean());
+        long expiresAt = in.readLong();
+        String domain = (String) in.readObject();
+        String path = (String) in.readObject();
+        boolean secure = in.readBoolean();
+        boolean httpOnly = in.readBoolean();
+        boolean hostOnly = in.readBoolean();
+        boolean persistent = in.readBoolean();
+
+        Cookie.Builder builder = new Cookie.Builder();
+        builder = builder.name(name);
+        builder = builder.value(value);
+        builder = builder.expiresAt(expiresAt);
+        builder = builder.domain(domain);
+        builder = builder.path(path);
+
+        builder = secure ? builder.secure() : builder;
+        builder = httpOnly ? builder.httpOnly() : builder;
+        builder = hostOnly ? builder.httpOnly() : builder;
+        // persistent not should set, see builder.expiresAt(expiresAt);
+
+        clientCookie = builder.build();
     }
 }

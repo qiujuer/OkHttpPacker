@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
+ * Copyright (C) 2014-2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
- * Created 1/1/2016
- * Changed 1/6/2016
- * Version 1.0.0
  * Author Qiujuer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,10 +19,7 @@ package net.qiujuer.common.okhttp;
 
 import android.content.Context;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.RequestBody;
-
-import net.qiujuer.common.okhttp.cookie.PersistentCookieStore;
+import net.qiujuer.common.okhttp.cookie.CookieManager;
 import net.qiujuer.common.okhttp.core.HttpCallback;
 import net.qiujuer.common.okhttp.core.HttpCore;
 import net.qiujuer.common.okhttp.io.IOParam;
@@ -36,15 +30,15 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.net.CookieStore;
-import java.net.HttpCookie;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 
 /**
  * This is okhttp main static class
@@ -54,10 +48,13 @@ public class Http extends HttpCore {
 
     private Http() {
         super(new DefaultResolver(), new DefaultRequestBuilder());
+
+        OkHttpClient.Builder builder = mOkHttpClient.newBuilder();
         // ConnectTimeOut
-        mOkHttpClient.setConnectTimeout(20 * 1000, TimeUnit.MILLISECONDS);
+        builder.connectTimeout(20 * 1000, TimeUnit.MILLISECONDS).build();
         // To intercept the Response
-        interceptToProgressResponse();
+        builder.addInterceptor(interceptToProgressResponse());
+        mOkHttpClient = builder.build();
     }
 
     public static Http getInstance() {
@@ -72,38 +69,28 @@ public class Http extends HttpCore {
     }
 
     public static void enableSaveCookie(Context context) {
-        getClient().setCookieHandler(new CookieManager(new PersistentCookieStore(context), CookiePolicy.ACCEPT_ALL));
+        getClient().newBuilder()
+                .cookieJar(CookieManager.createBySharedPreferences(context));
     }
 
-    public static void removeCookie() {
-        CookieHandler handler = getClient().getCookieHandler();
-        if (handler != null && handler instanceof CookieManager) {
-            CookieManager manager = (CookieManager) handler;
-            CookieStore store = manager.getCookieStore();
-            if (store != null)
-                store.removeAll();
+    public static void removeAllCookie() {
+        CookieJar cookieJar = getClient().cookieJar();
+        if (cookieJar != null && cookieJar instanceof CookieManager) {
+            CookieManager manager = (CookieManager) cookieJar;
+            manager.removeAll();
         }
     }
 
     public static String getCookie() {
-        CookieHandler handler = getClient().getCookieHandler();
-        if (handler != null && handler instanceof CookieManager) {
-            CookieManager manager = (CookieManager) handler;
-            CookieStore store = manager.getCookieStore();
-            if (store != null) {
-                Util.log(store.toString());
-                try {
-                    List<HttpCookie> cookies = store.getCookies();
-                    if (cookies.size() > 0) {
-                        String cookieStr = "";
-                        for (HttpCookie cookie : cookies) {
-                            cookieStr += cookie.toString();
-                        }
-                        return cookieStr;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        CookieJar cookieJar = getClient().cookieJar();
+        if (cookieJar != null && cookieJar instanceof CookieManager) {
+            CookieManager manager = (CookieManager) cookieJar;
+            try {
+                List<Cookie> cookies = manager.getCookies();
+                if (cookies != null)
+                    return Util.cookieHeader(cookies);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return "";
@@ -111,10 +98,6 @@ public class Http extends HttpCore {
 
     public static OkHttpClient getClient() {
         return getInstance().mOkHttpClient;
-    }
-
-    public static void cancel(Object tag) {
-        getClient().cancel(tag);
     }
 
 

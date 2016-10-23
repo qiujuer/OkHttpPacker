@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
+ * Copyright (C) 2014-2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
- * Created 1/1/2016
- * Changed 1/6/2016
- * Version 1.0.0
  * Author Qiujuer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,11 +17,10 @@
  */
 package net.qiujuer.common.okhttp.core;
 
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.ResponseBody;
-
 import java.io.IOException;
 
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
 import okio.ForwardingSource;
@@ -44,7 +40,7 @@ public class ForwardResponseBody extends ResponseBody {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
         this.mBody.close();
     }
 
@@ -54,7 +50,7 @@ public class ForwardResponseBody extends ResponseBody {
     }
 
     @Override
-    public long contentLength() throws IOException {
+    public long contentLength() {
         return mBody.contentLength();
     }
 
@@ -67,7 +63,7 @@ public class ForwardResponseBody extends ResponseBody {
     }
 
     @Override
-    public BufferedSource source() throws IOException {
+    public BufferedSource source() {
         if (mSource == null) {
             mSource = Okio.buffer(source(mBody.source()));
         }

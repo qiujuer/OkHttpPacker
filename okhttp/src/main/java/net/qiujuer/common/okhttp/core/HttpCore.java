@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
+ * Copyright (C) 2014-2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
- * Created 1/1/2016
- * Changed 1/6/2016
- * Version 1.0.0
  * Author Qiujuer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,15 +19,6 @@ package net.qiujuer.common.okhttp.core;
 
 import android.text.TextUtils;
 
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
-
 import net.qiujuer.common.okhttp.DefaultCallback;
 import net.qiujuer.common.okhttp.Util;
 import net.qiujuer.common.okhttp.io.IOParam;
@@ -45,6 +33,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * This class is http core
@@ -86,8 +83,8 @@ public class HttpCore {
 
 
     // intercept the Response body stream progress
-    public OkHttpClient interceptToProgressResponse() {
-        mOkHttpClient.networkInterceptors().add(new Interceptor() {
+    public Interceptor interceptToProgressResponse() {
+       return new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 Response response = chain.proceed(chain.request());
@@ -96,8 +93,7 @@ public class HttpCore {
                         .body(body)
                         .build();
             }
-        });
-        return mOkHttpClient;
+        };
     }
 
     /**
@@ -141,15 +137,13 @@ public class HttpCore {
         callStart(resCallBack, request);
 
         mOkHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(final Request request, final IOException e) {
-                Util.log("onFailure:" + request.toString());
-                callFailure(resCallBack, request, null, e);
+            public void onFailure(Call call, IOException e) {
+                Util.log("onFailure:" + call.request().toString());
+                callFailure(resCallBack, call.request(), null, e);
                 callFinish(resCallBack);
             }
 
-            @Override
-            public void onResponse(final Response response) {
+            public void onResponse(Call call, Response response) {
                 try {
                     Object ret = null;
                     final String string = response.body().string();
@@ -203,7 +197,7 @@ public class HttpCore {
     }
 
 
-    protected void deliveryAsyncResult(final Request request, final StreamCall call, final HttpCallback<?> callback) {
+    protected void deliveryAsyncResult(final Request request, final StreamCall streamCall, final HttpCallback<?> callback) {
         Util.log("onDelivery:" + request.url().toString());
         final HttpCallback<?> resCallBack = callback == null ? new DefaultCallback() : callback;
 
@@ -211,16 +205,14 @@ public class HttpCore {
         callStart(resCallBack, request);
 
         mOkHttpClient.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(final Request request, final IOException e) {
-                Util.log("onFailure:" + request.toString());
-                callFailure(resCallBack, request, null, e);
+            public void onFailure(Call call, IOException e) {
+                Util.log("onFailure:" + call.request().toString());
+                callFailure(resCallBack, call.request(), null, e);
                 callFinish(resCallBack);
             }
 
-            @Override
-            public void onResponse(final Response response) {
-                OutputStream out = call.getOutputStream();
+            public void onResponse(Call call, Response response) {
+                OutputStream out = streamCall.getOutputStream();
                 InputStream in = null;
                 byte[] buf = new byte[mBufferSize];
                 try {
@@ -237,13 +229,13 @@ public class HttpCore {
                         out.flush();
                     }
                     // On success
-                    call.onSuccess(response.code());
+                    streamCall.onSuccess(response.code());
                 } catch (Exception e) {
                     Util.log("onResponse Failure:" + response.request().toString());
                     callFailure(resCallBack, response.request(), response, e);
                 } finally {
-                    com.squareup.okhttp.internal.Util.closeQuietly(in);
-                    com.squareup.okhttp.internal.Util.closeQuietly(out);
+                    okhttp3.internal.Util.closeQuietly(in);
+                    okhttp3.internal.Util.closeQuietly(out);
                 }
                 callFinish(resCallBack);
             }

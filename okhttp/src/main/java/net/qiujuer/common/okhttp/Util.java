@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
+ * Copyright (C) 2014-2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
- * Created 1/1/2016
- * Changed 1/6/2016
- * Version 1.0.0
  * Author Qiujuer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,6 +33,8 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import okhttp3.Cookie;
 
 /**
  * This is okhttp util
@@ -130,6 +129,18 @@ public final class Util {
             }
         }
         return file;
+    }
+
+    public static String cookieHeader(List<Cookie> cookies) {
+        StringBuilder cookieHeader = new StringBuilder();
+        for (int i = 0, size = cookies.size(); i < size; i++) {
+            if (i > 0) {
+                cookieHeader.append("; ");
+            }
+            Cookie cookie = cookies.get(i);
+            cookieHeader.append(cookie.name()).append('=').append(cookie.value());
+        }
+        return cookieHeader.toString();
     }
 
     // Show log

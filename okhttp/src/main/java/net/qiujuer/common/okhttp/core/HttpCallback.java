@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
+ * Copyright (C) 2014-2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
- * Created 1/1/2016
- * Changed 1/6/2016
- * Version 1.0.0
  * Author Qiujuer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,28 +17,30 @@
  */
 package net.qiujuer.common.okhttp.core;
 
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
-import net.qiujuer.genius.kit.util.UiKit;
+import net.qiujuer.genius.kit.handler.Run;
+import net.qiujuer.genius.kit.handler.runable.Action;
+
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * This is http callback
  */
 public abstract class HttpCallback<T> implements ProgressListener {
     protected void dispatchStart(final Request request) {
-        UiKit.runOnMainThreadSync(new Runnable() {
+        Run.onUiSync(new Action() {
             @Override
-            public void run() {
+            public void call() {
                 onStart(request);
             }
         });
     }
 
     protected void dispatchFinish() {
-        UiKit.runOnMainThreadSync(new Runnable() {
+        Run.onUiSync(new Action() {
             @Override
-            public void run() {
+            public void call() {
                 onFinish();
             }
         });

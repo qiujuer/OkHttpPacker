@@ -1,9 +1,6 @@
 /*
- * Copyright (C) 2016 Qiujuer <qiujuer@live.cn>
+ * Copyright (C) 2014-2016 Qiujuer <qiujuer@live.cn>
  * WebSite http://www.qiujuer.net
- * Created 1/1/2016
- * Changed 1/1/2016
- * Version 1.0.0
  * Author Qiujuer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +17,6 @@
  */
 package net.qiujuer.common.okhttp.core;
 
-import com.squareup.okhttp.OkHttpClient;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +36,8 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+import okhttp3.OkHttpClient;
+
 /**
  * This is https cert tool
  */
@@ -54,7 +52,7 @@ public class CertTool {
             KeyManager[] keyManagers = prepareKeyManager(bksFile, password);
             SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(keyManagers, new TrustManager[]{new XTrustManager(chooseTrustManager(trustManagers))}, new SecureRandom());
-            client.setSslSocketFactory(sslContext.getSocketFactory());
+            //client.setSslSocketFactory(sslContext.getSocketFactory());
         } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
             e.printStackTrace();
         }
