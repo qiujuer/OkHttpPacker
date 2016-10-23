@@ -22,6 +22,8 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'net.qiujuer.genius:kit:1.5.0'
+    compile 'net.qiujuer.genius:kit-reflect:2.0.0-beta9'
+    compile 'net.qiujuer.genius:kit-handler:2.0.0-beta8'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'com.google.code.gson:gson:2.6.2'
 }
