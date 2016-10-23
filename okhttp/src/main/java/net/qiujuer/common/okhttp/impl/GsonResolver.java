@@ -23,10 +23,11 @@ package net.qiujuer.common.okhttp.impl;
 import com.google.gson.Gson;
 import com.google.gson.internal.$Gson$Types;
 
+import net.qiujuer.common.okhttp.core.HttpCallback;
 import net.qiujuer.common.okhttp.core.HttpCore;
 import net.qiujuer.common.okhttp.core.Resolver;
+import net.qiujuer.genius.kit.reflect.Reflector;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
@@ -62,21 +63,14 @@ public class GsonResolver implements Resolver {
     public Object analysis(String rsp, Class<?> subclass) {
         if (subclass == String.class)
             return rsp;
+
         try {
-            return analysis(rsp, getSuperclassTypeParameter(subclass));
+            Type[] types = Reflector.getActualTypeArguments(HttpCallback.class, subclass);
+            return analysis(rsp, $Gson$Types.canonicalize(types[0]));
         } catch (RuntimeException e) {
             if (HttpCore.DEBUG)
                 e.printStackTrace();
             return mGson.fromJson(rsp, subclass);
         }
-    }
-
-    Type getSuperclassTypeParameter(Class<?> subclass) {
-        Type superclass = subclass.getGenericSuperclass();
-        if (superclass instanceof Class) {
-            throw new RuntimeException("Missing type parameter.");
-        }
-        ParameterizedType parameterized = (ParameterizedType) superclass;
-        return $Gson$Types.canonicalize(parameterized.getActualTypeArguments()[0]);
     }
 }
