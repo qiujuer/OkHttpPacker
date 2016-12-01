@@ -251,7 +251,7 @@ public class Http extends HttpCore {
     }
 
     public static <T> T postSync(Class<T> tClass, String url, Object tag, StrParam... strParams) {
-        return getInstance().executeGetSync(tClass, null, url, tag, strParams);
+        return getInstance().executePostSync(tClass, null, url, tag, strParams);
     }
 
     public static <T> T postSync(String url, HttpCallback<T> callback, List<StrParam> strParams) {
@@ -275,7 +275,7 @@ public class Http extends HttpCore {
     }
 
     public static <T> T postSync(String url, Object tag, HttpCallback<T> callback, StrParam... strParams) {
-        return getInstance().executeGetSync(null, callback, url, tag, strParams);
+        return getInstance().executePostSync(null, callback, url, tag, strParams);
     }
 
     /**
